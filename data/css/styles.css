@@ -1,1 +1,213 @@
-body { padding-bottom: 70px; }
+/* http://meyerweb.com/eric/tools/css/reset/ 2. v2.0 | 20110126
+  License: none (public domain)
+*/
+
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+}
+body {
+  line-height: 1;
+}
+ol,
+ul {
+  list-style: none;
+}
+blockquote,
+q {
+  quotes: none;
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: "";
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/*
+ ===============================
+ Custom Syles
+ ===============================
+ */
+
+html,
+body {
+  background: #ecf0f1;
+  margin: 0;
+  height: 100%;
+}
+
+.container {
+  width: 90%;
+  height: 90%;
+  margin: 1rem auto;
+}
+
+a {
+  text-decoration: none;
+  width: 50%;
+}
+
+a:focus {
+  text-decoration: none;
+  width: 50%;
+}
+
+/*
+===============================
+Title
+===============================
+*/
+
+.title {
+  color: #95a5a6;
+  text-align: center;
+  font: 300 40px "Lato", "Open Sans", "Helvetica Nue", sans-serif;
+  letter-spacing: 1px;
+  text-transform: capitalize;
+  height: auto;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.sub-title {
+  color: #95a5a6;
+  text-align: center;
+  font: 300 15px "Lato", "Open Sans", "Helvetica Nue", sans-serif;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin: 5px auto 15px auto;
+}
+
+/*
+===============================
+Info
+===============================
+*/
+
+#fastled__table,
+#fastled__table tr {
+  border: 1px solid #95a5a6;
+}
+
+#fastled__table {
+  text-align: left;
+  margin: 0 auto;
+  color: #3498db;
+  font: 300 15px "Lato", "Open Sans", "Helvetica Nue", sans-serif;
+  letter-spacing: 2px;
+  /* text-transform: capitalize; */
+  margin: 5px auto 15px auto;
+}
+
+#fastled__table td {
+  padding: 0.1rem 1rem;
+}
+
+.content-block {
+  text-align: center;
+  margin-top: 2rem;
+}

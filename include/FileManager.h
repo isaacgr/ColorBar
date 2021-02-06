@@ -7,7 +7,7 @@ String getContentType(String filename)
   else if (filename.endsWith(".css"))
     return "text/css";
   else if (filename.endsWith(".js"))
-    return "application/javascript";
+    return "text/javascript";
   else if (filename.endsWith(".png"))
     return "image/png";
   else if (filename.endsWith(".gif"))
@@ -41,7 +41,8 @@ bool handleFileRead(String path)
       path += ".gz";                                    // If the file exists
     File file = SPIFFS.open(path, "r");                 // Open it
     size_t sent = server.streamFile(file, contentType); // And send it to the client
-    file.close();                                       // Then close the file again
+    Serial.println(String("\tSent file: ") + path);
+    file.close(); // Then close the file again
     return true;
   }
 

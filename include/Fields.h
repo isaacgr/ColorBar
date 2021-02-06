@@ -1,3 +1,8 @@
+/*
+===============================
+Power
+===============================
+*/
 String getPower()
 {
   return String(g_Power);
@@ -9,6 +14,11 @@ String setPower(String value)
   return String(g_Power);
 }
 
+/*
+===============================
+Brightness
+===============================
+*/
 String getBrightness()
 {
   return String(g_Brightness);
@@ -21,6 +31,11 @@ String setBrightness(String value)
   return String(g_Brightness);
 }
 
+/*
+===============================
+Pattern
+===============================
+*/
 String getPattern()
 {
   return patterns[currentPatternIndex].name;
@@ -70,12 +85,18 @@ String getPatterns()
   return json;
 }
 
+/*
+===============================
+Color Temperature
+===============================
+*/
+
 void setColorTemperature(uint8_t value)
 {
   if (value >= colorCount)
     value = colorCount - 1;
 
-  currentPatternIndex = value;
+  currentTemperatureIndex = value;
 }
 
 String setColorTemperature(String colorName)
@@ -117,6 +138,47 @@ String getColorTemperatures()
 String getColorTemperature()
 {
   return temperatures[currentTemperatureIndex].name;
+}
+
+/*
+===============================
+FastLED Info
+===============================
+*/
+
+String getFastLedInfo()
+{
+  struct Info
+  {
+    char name[32];
+    uint32_t value;
+  };
+
+  typedef Info InfoList[];
+
+  InfoList fastLedInfo = {
+      {"fps", FastLED.getFPS()},
+      {"power (mW)", calculate_unscaled_power_mW(leds, NUM_LEDS)},
+      {"max_brightness", calculate_max_brightness_for_power_mW(255, g_PowerLimit)},
+      {"power_limit (mW)", g_PowerLimit},
+  };
+
+  const uint8_t infoCount = ARRAY_SIZE(fastLedInfo);
+  const size_t CAPACITY = JSON_ARRAY_SIZE(16);
+
+  StaticJsonDocument<CAPACITY> doc;
+  JsonArray json = doc.to<JsonArray>();
+  StaticJsonDocument<256> object;
+
+  for (int i = 0; i < infoCount; i++)
+  {
+    object["name"] = fastLedInfo[i].name;
+    object["value"] = fastLedInfo[i].value;
+    json.add(object);
+  }
+  String result;
+  serializeJsonPretty(doc, result);
+  return result;
 }
 
 FieldList fields = {

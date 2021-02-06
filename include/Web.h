@@ -3,7 +3,14 @@ void setupWeb()
   server.on("/all", HTTP_GET, []() {
     digitalWrite(LED_BUILTIN, 0);
     String json = getFieldsJson(fields, fieldCount);
-    server.send(200, "text/json", json);
+    server.send(200, "application/json", json);
+    digitalWrite(LED_BUILTIN, 1);
+  });
+
+  server.on("/fastLedInfo", HTTP_GET, []() {
+    digitalWrite(LED_BUILTIN, 0);
+    String result = getFastLedInfo();
+    server.send(200, "application/json", result);
     digitalWrite(LED_BUILTIN, 1);
   });
 
@@ -16,7 +23,7 @@ void setupWeb()
     root["value"] = value;
     String result;
     serializeJsonPretty(root, result);
-    server.send(200, "text/json", result);
+    server.send(200, "application/json", result);
     digitalWrite(LED_BUILTIN, 1);
   });
 

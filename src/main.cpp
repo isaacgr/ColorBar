@@ -63,6 +63,7 @@ void setup()
   SPIFFS.begin(); // Start the SPI Flash Files System
 
   server.begin();
+  server.enableCORS();
   setupWeb();
 
   Serial.println("HTTP server started");
@@ -89,17 +90,17 @@ void loop()
   {
     patterns[currentPatternIndex].pattern();
   }
-  EVERY_N_MILLISECONDS(250)
-  {
-    g_OLED.clearBuffer();
-    g_OLED.setCursor(0, g_lineHeight);
-    g_OLED.printf("FPS: %u", FastLED.getFPS());
-    g_OLED.setCursor(0, g_lineHeight * 2);
-    g_OLED.printf("Power: %u mW", calculate_unscaled_power_mW(leds, NUM_LEDS));
-    g_OLED.setCursor(0, g_lineHeight * 3);
-    g_OLED.printf("Brite: %d", calculate_max_brightness_for_power_mW(255, g_PowerLimit));
-    g_OLED.sendBuffer();
-  }
+  // EVERY_N_MILLISECONDS(250)
+  // {
+  //   g_OLED.clearBuffer();
+  //   g_OLED.setCursor(0, g_lineHeight);
+  //   g_OLED.printf("FPS: %u", FastLED.getFPS());
+  //   g_OLED.setCursor(0, g_lineHeight * 2);
+  //   g_OLED.printf("Power: %u mW", calculate_unscaled_power_mW(leds, NUM_LEDS));
+  //   g_OLED.setCursor(0, g_lineHeight * 3);
+  //   g_OLED.printf("Brite: %d", calculate_max_brightness_for_power_mW(255, g_PowerLimit));
+  //   g_OLED.sendBuffer();
+  // }
   FastLED.show();
   FastLED.delay(1000 / FRAMES_PER_SECOND);
 }
