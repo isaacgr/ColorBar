@@ -77,7 +77,7 @@ String getPatterns()
 
   for (uint8_t i = 0; i < patternCount; i++)
   {
-    json += "\"" + patterns[i].name + "\"";
+    json += patterns[i].name;
     if (i < patternCount - 1)
       json += ",";
   }
@@ -127,7 +127,7 @@ String getColorTemperatures()
 
   for (uint8_t i = 0; i < colorCount; i++)
   {
-    json += "\"" + temperatures[i].name + "\"";
+    json += temperatures[i].name;
     if (i < colorCount - 1)
       json += ",";
   }

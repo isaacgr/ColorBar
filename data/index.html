@@ -7,17 +7,72 @@
       href="https://fonts.googleapis.com/css?family=Lato:100,300,300i,400"
       rel="stylesheet"
     />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css"
+    />
+
     <link href="./css/styles.css" rel="stylesheet" />
-    <title>Backlight Control</title>
+    <title>Backlight Color Bar</title>
   </head>
   <body>
     <div class="container">
-      <h1 class="title">Backlight Control</h1>
+      <h1 class="title">Backlight Color Bar</h1>
+      <h2 class="sub-title" id="error"></h2>
       <div class="content-block">
         <h3 class="sub-title">FastLED Info</h3>
         <table id="fastled__table"></table>
       </div>
+      <div class="content-block">
+        <button
+          class="btn btn-secondary btn-lg"
+          id="power-button"
+          onclick="updatePower()"
+        >
+          <i class="bi bi-power"></i>
+        </button>
+      </div>
+      <div class="content-block">
+        <div class="slidecontainer">
+          <h3 class="sub-title">Brightness</h3>
+          <input
+            type="range"
+            class="slider"
+            id="brightness-slider"
+            onchange="updateBrightness(this.value)"
+          />
+          <p id="brightness-value" class="sub-title"></p>
+        </div>
+      </div>
+      <div class="content-block content-block--flex">
+        <div class="dropdown">
+          <h3 class="sub-title">Pattern Selection</h3>
+          <button
+            class="btn btn-secondary dropdown-toggle"
+            type="button"
+            id="pattern-selection"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          ></button>
+          <ul
+            class="dropdown-menu"
+            aria-labelledby="dropdownMenuButton"
+            id="pattern-options"
+          ></ul>
+        </div>
+      </div>
     </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
+      crossorigin="anonymous"
+    ></script>
     <script type="text/javascript" src="js/app.js"></script>
   </body>
 </html>

@@ -122,6 +122,19 @@ String setFieldValue(String name, String value, FieldList fields, uint8_t count)
   return result;
 }
 
+String getFieledOptions(String name, FieldList fields, uint8_t count)
+{
+  Field field = getField(name, fields, count);
+  if (field.getOptions)
+  {
+    return field.getOptions();
+  }
+  else
+  {
+    return String();
+  }
+}
+
 String getFieldsJson(FieldList fields, uint8_t count)
 {
   StaticJsonDocument<1024> json;

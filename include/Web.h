@@ -14,6 +14,19 @@ void setupWeb()
     digitalWrite(LED_BUILTIN, 1);
   });
 
+  server.on("/fieldOptions", HTTP_GET, []() {
+    digitalWrite(LED_BUILTIN, 0);
+    String name = server.arg("name");
+    String value = getFieledOptions(name, fields, fieldCount);
+    StaticJsonDocument<256> root;
+    root["name"] = name;
+    root["options"] = value;
+    String result;
+    serializeJsonPretty(root, result);
+    server.send(200, "application/json", result);
+    digitalWrite(LED_BUILTIN, 1);
+  });
+
   server.on("/fieldValue", HTTP_GET, []() {
     digitalWrite(LED_BUILTIN, 0);
     String name = server.arg("name");
@@ -36,7 +49,6 @@ void setupWeb()
       String newValue = setFieldValue(name, value, fields, fieldCount);
       StaticJsonDocument<256> root;
       root["name"] = name;
-      root["userValue"] = value;
       root["newValue"] = newValue;
       String result;
       serializeJsonPretty(root, result);

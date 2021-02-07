@@ -156,6 +156,16 @@ a:focus {
   width: 50%;
 }
 
+.content-block {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.content-block--flex {
+  display: flex;
+  justify-content: space-around;
+}
+
 /*
 ===============================
 Title
@@ -199,7 +209,6 @@ Info
   color: #3498db;
   font: 300 15px "Lato", "Open Sans", "Helvetica Nue", sans-serif;
   letter-spacing: 2px;
-  /* text-transform: capitalize; */
   margin: 5px auto 15px auto;
 }
 
@@ -207,7 +216,64 @@ Info
   padding: 0.1rem 1rem;
 }
 
-.content-block {
-  text-align: center;
-  margin-top: 2rem;
+/*
+===============================
+Slider
+===============================
+*/
+.slidecontainer {
+  width: 100%;
+}
+
+.slider {
+  -webkit-appearance: none;
+  width: 25.5rem;
+  height: 25px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  border-radius: 15px;
+  -webkit-transition: 0.2s;
+  transition: opacity 0.2s;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  background: #3498db;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  background: #3498db;
+  cursor: pointer;
+}
+
+/*
+===============================
+Error
+===============================
+*/
+
+#error {
+  color: #c0392b;
+}
+
+/*
+===============================
+Pattern Selection
+===============================
+*/
+
+#pattern-selection,
+#pattern-options {
+  text-transform: capitalize;
 }
