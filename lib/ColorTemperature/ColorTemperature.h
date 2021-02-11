@@ -34,7 +34,7 @@ void DrawColorTemperature()
 {
   // draw a generic, no-name rainbow
   static uint8_t starthue = 0;
-  fill_rainbow(leds + 5, NUM_LEDS - 5, --starthue, 20);
+  fill_rainbow(leds, NUM_LEDS, --starthue, 20);
 
   FastLED.setTemperature(temperatures[currentTemperatureIndex].temperature);
 }

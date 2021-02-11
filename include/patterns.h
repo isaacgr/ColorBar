@@ -1,6 +1,10 @@
 #include <Pacifica.h>
 #include <Rainbow.h>
 #include <ColorTemperature.h>
+#include <Bounce.h>
+#include <Fire.h>
+#include <Comet.h>
+#include <Marquee.h>
 
 void showRGB(const CRGB &rgb)
 {
@@ -22,6 +26,10 @@ PatternAndNameList patterns = {
     {DrawRainbow, "rainbow"},
     {pacifica_loop, "pacifica"},
     {DrawColorTemperature, "colorTemperature"},
+    {DrawBouncingBalls, "bouncingBalls"},
+    {DrawFireEffect, "fire"},
+    {DrawComet, "comet"},
+    {DrawMarquee, "marquee"},
 };
 
 uint8_t patternCount = ARRAY_SIZE(patterns);

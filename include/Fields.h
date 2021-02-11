@@ -131,7 +131,6 @@ String getColorTemperatures()
     if (i < colorCount - 1)
       json += ",";
   }
-
   return json;
 }
 

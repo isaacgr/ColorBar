@@ -222,12 +222,13 @@ Slider
 ===============================
 */
 .slidecontainer {
-  width: 100%;
+  width: 50%;
+  margin: 0 auto;
 }
 
 .slider {
   -webkit-appearance: none;
-  width: 25.5rem;
+  width: 100%;
   height: 25px;
   background: #d3d3d3;
   outline: none;

@@ -14,6 +14,7 @@
 #endif
 
 #define ARRAY_SIZE(A) (sizeof(A) / sizeof((A)[0]))
+#define TIMES_PER_SECOND(x) EVERY_N_MILLISECONDS(1000 / x)
 
 #define FASTLED_INTERNAL
 #define OLED_CLOCK 22
@@ -40,13 +41,14 @@ uint8_t currentPatternIndex = 0;
 uint8_t currentTemperatureIndex = 0;
 
 #include <secret.h>
-#include <WiFiUtils.h>
-#include <FileManager.h>
+#include <wifi_utils.h>
+#include <file_manager.h>
 #include <patterns.h>
 
-#include <Field.h>
-#include <Fields.h>
-#include <Web.h>
+#include <field.h>
+#include <field_utils.h>
+#include <fields.h>
+#include <routes.h>
 
 void setup()
 {
@@ -82,6 +84,7 @@ void setup()
 void loop()
 {
   server.handleClient();
+  FastLED.clear();
   if (g_Power == 0)
   {
     fill_solid(leds, NUM_LEDS, CRGB::Black);
@@ -101,6 +104,6 @@ void loop()
   //   g_OLED.printf("Brite: %d", calculate_max_brightness_for_power_mW(255, g_PowerLimit));
   //   g_OLED.sendBuffer();
   // }
-  FastLED.show();
+  // FastLED.show();
   FastLED.delay(1000 / FRAMES_PER_SECOND);
 }
