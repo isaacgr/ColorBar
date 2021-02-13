@@ -21,7 +21,7 @@
 #define OLED_DATA 21
 #define OLED_RESET 16
 
-#define NUM_LEDS 20
+#define NUM_LEDS 45
 #define LED_PIN 5
 #define COLOR_SEQUENCE GRB
 #define CHIPSET WS2812B
@@ -37,12 +37,34 @@ uint8_t g_lineHeight = 0;
 uint8_t g_Brightness = 255;
 uint16_t g_PowerLimit = 900;
 uint8_t g_Power = 1;
+uint8_t g_Hue = 0; // rotating "base color" used by many of the patterns
+
 uint8_t currentPatternIndex = 0;
 uint8_t currentTemperatureIndex = 0;
+
+uint8_t cyclePalettes = 0;
+uint8_t paletteDuration = 10;
+uint8_t currentPaletteIndex = 0;
+unsigned long paletteTimeout = 0;
+
+// modifiers
+uint8_t g_ColorTemperature = 0;
+uint8_t g_ColorPalette = 0;
+uint8_t g_Cycle = 0;
+uint8_t g_Sparking = 100;
+uint8_t g_Cooling = 20;
+uint8_t g_Sparks = 3;
+uint8_t g_SparkHeight = 4;
+bool breversed = false;
+bool bmirrored = false;
+uint8_t g_Speed = 30;
+
+CRGB solidColor = CRGB::Blue;
 
 #include <secret.h>
 #include <wifi_utils.h>
 #include <file_manager.h>
+#include <palettes.h>
 #include <patterns.h>
 
 #include <field.h>

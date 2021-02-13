@@ -87,6 +87,59 @@ String getPatterns()
 
 /*
 ===============================
+Palette
+===============================
+*/
+String getPalette()
+{
+  return paletteNames[currentPaletteIndex];
+}
+
+void setPalette(uint8_t value)
+{
+  if (value >= paletteCount)
+    value = paletteCount - 1;
+
+  currentPaletteIndex = value;
+}
+
+String setPalette(String paletteName)
+{
+  int i = 0;
+  while (i < paletteCount)
+  {
+    if (paletteNames[i] == paletteName)
+    {
+      break;
+    }
+    i++;
+  }
+  if (i < paletteCount)
+  {
+    setPalette(i);
+    return String(paletteNames[currentPaletteIndex]);
+  }
+  else
+  {
+    throw -1;
+  }
+}
+
+String getPalettes()
+{
+  String json = "";
+
+  for (uint8_t i = 0; i < paletteCount; i++)
+  {
+    json += paletteNames[i];
+    if (i < paletteCount - 1)
+      json += ",";
+  }
+  return json;
+}
+
+/*
+===============================
 Color Temperature
 ===============================
 */
@@ -141,6 +194,79 @@ String getColorTemperature()
 
 /*
 ===============================
+Solid Color
+===============================
+*/
+
+String getSolidColor()
+{
+  return String(solidColor.r) + "," + String(solidColor.g) + "," + String(solidColor.b);
+}
+
+String setSolidColor(uint8_t r, uint8_t g, uint8_t b)
+{
+  solidColor = CRGB(r, g, b);
+
+  return String(solidColor.r) + "," + String(solidColor.g) + "," + String(solidColor.b);
+}
+
+String setSolidColor(CRGB color)
+{
+  return setSolidColor(color.r, color.g, color.b);
+}
+
+String setSolidColor(String value)
+{
+  CRGB color = parseColor(value);
+
+  return setSolidColor(color);
+}
+
+/*
+===============================
+Modifiers
+===============================
+*/
+
+String getCooling()
+{
+  return String(g_Cooling);
+}
+String getSparking()
+{
+  return String(g_Sparking);
+}
+String getReversed()
+{
+  return String(breversed);
+}
+String getMirrored()
+{
+  return String(bmirrored);
+}
+String setCooling(String value)
+{
+  g_Cooling = value.toInt();
+  return String(g_Cooling);
+}
+String setSparking(String value)
+{
+  g_Sparking = value.toInt();
+  return String(g_Sparking);
+}
+String setReversed(String value)
+{
+  breversed = bool(value);
+  return String(breversed);
+}
+String setMirrored(String value)
+{
+  bmirrored = bool(value);
+  return String(bmirrored);
+}
+
+/*
+===============================
 FastLED Info
 ===============================
 */
@@ -181,11 +307,19 @@ String getFastLedInfo()
 }
 
 FieldList fields = {
-    {"power", "Power", NumberFieldType, 0, 1, getPower, NULL, setPower},
-    {"brightness", "Brightness", NumberFieldType, 1, 255, getBrightness, NULL, setBrightness},
+    {"power", "Power", NumberFieldType, false, 0, 1, getPower, NULL, setPower},
+    {"brightness", "Brightness", NumberFieldType, false, 1, 255, getBrightness, NULL, setBrightness},
 
-    {"pattern", "Pattern", SelectFieldType, 0, patternCount, getPattern, getPatterns, setPattern},
-    {"colorTemperature", "ColorTemperature", SelectFieldType, 0, colorCount, getColorTemperature, getColorTemperatures, setColorTemperature},
+    {"pattern", "Pattern", SelectFieldType, false, 0, patternCount, getPattern, getPatterns, setPattern},
+    {"solidColor", "SolidColor", ColorFieldType, false, 0, 255, getSolidColor, NULL, setSolidColor},
+
+    // modifiers
+    {"palette", "Palette", SelectFieldType, true, 0, paletteCount, getPalette, getPalettes, setPalette},
+    {"colorTemperature", "ColorTemperature", SelectFieldType, true, 0, colorCount, getColorTemperature, getColorTemperatures, setColorTemperature},
+    {"cooling", "Cooling", NumberFieldType, true, 0, 255, getCooling, NULL, setCooling},
+    {"sparking", "Sparking", NumberFieldType, true, 0, 255, getSparking, NULL, setSparking},
+    {"reversed", "Reversed", BooleanFieldType, true, 0, 1, getReversed, NULL, setReversed},
+    {"mirrored", "Mirrored", BooleanFieldType, true, 0, 1, getMirrored, NULL, setMirrored},
 };
 
 uint8_t fieldCount = ARRAY_SIZE(fields);

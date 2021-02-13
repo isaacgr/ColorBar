@@ -8,6 +8,7 @@ var urlBase = "";
 
 var currentPowerState;
 var currentBrightness;
+var colorWheel = new iro.ColorPicker("#colorWheelDemo");
 
 function populateInfoTable(json) {
   let rows = json.map((info) => {
@@ -87,7 +88,6 @@ function handlePattern(field) {
 }
 
 function updatePattern(pattern) {
-  console.log(pattern);
   setField("pattern", pattern)
     .then((result) => {
       document.getElementById(
@@ -95,6 +95,63 @@ function updatePattern(pattern) {
       ).innerHTML = result.newValue.split(/(?=[A-Z])/).join(" ");
     })
     .catch((error) => setError(error));
+}
+
+function handlePalette(field) {
+  document.getElementById("palette-selection").innerHTML = field.value
+    .split(/(?=[A-Z])/)
+    .join(" ");
+  let items = field.options
+    .split(",")
+    .map((item) => {
+      return `<li class="dropdown-item" onclick="updatePalette(this.id)" id=${item}>${item
+        .split(/(?=[A-Z])/)
+        .join(" ")}</li>`;
+    })
+    .join("");
+  document.getElementById("palette-options").innerHTML = items;
+}
+
+function updatePalette(palette) {
+  setField("palette", palette)
+    .then((result) => {
+      document.getElementById(
+        "palette-selection"
+      ).innerHTML = result.newValue.split(/(?=[A-Z])/).join(" ");
+    })
+    .catch((error) => setError(error));
+}
+
+function handleColorTemperature(field) {
+  document.getElementById(
+    "temperature-selection"
+  ).innerHTML = field.value.split(/(?=[A-Z])/).join(" ");
+  let items = field.options
+    .split(",")
+    .map((item) => {
+      return `<li class="dropdown-item" onclick="updateColorTemperature(this.id)" id=${item}>${item
+        .split(/(?=[A-Z])/)
+        .join(" ")}</li>`;
+    })
+    .join("");
+  document.getElementById("temperature-options").innerHTML = items;
+}
+
+function updateColorTemperature(temperature) {
+  setField("colorTemperature", temperature)
+    .then((result) => {
+      document.getElementById(
+        "temperature-selection"
+      ).innerHTML = result.newValue.split(/(?=[A-Z])/).join(" ");
+    })
+    .catch((error) => setError(error));
+}
+
+function handleSolidColor(field) {
+  const r = field.value.split(",")[0];
+  const g = field.value.split(",")[1];
+  const b = field.value.split(",")[2];
+  colorWheel.color.rgb = { r, g, b };
 }
 
 function populateFields(json) {
@@ -106,6 +163,12 @@ function populateFields(json) {
       handleBrightness(field);
     } else if (field.name === "pattern") {
       handlePattern(field);
+    } else if (field.name === "solidColor") {
+      handleSolidColor(field);
+    } else if (field.name === "palette") {
+      handlePalette(field);
+    } else if (field.name === "colorTemperature") {
+      handleColorTemperature(field);
     }
   });
 }
@@ -155,7 +218,16 @@ function getAllInfo() {
     });
 }
 
+colorWheel.on("input:end", function (color, changes) {
+  // when the color has changed, the callback gets passed the color object and an object providing which color channels (out of H, S, V) have changed.
+  setField(
+    "solidColor",
+    `${color.rgb.r},${color.rgb.g},${color.rgb.b}`
+  ).catch((error) => setError(error));
+});
+
 function setError(error) {
+  console.log(error);
   document.getElementById("error").innerHTML = `Error: ${error.message}`;
 }
 

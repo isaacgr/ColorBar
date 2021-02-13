@@ -163,7 +163,11 @@ a:focus {
 
 .content-block--flex {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
+}
+
+.content-block--flex > * {
+  margin: 0 1rem;
 }
 
 /*
@@ -218,7 +222,7 @@ Info
 
 /*
 ===============================
-Slider
+Brightness Slider
 ===============================
 */
 .slidecontainer {
@@ -277,4 +281,15 @@ Pattern Selection
 #pattern-selection,
 #pattern-options {
   text-transform: capitalize;
+}
+
+/*
+===============================
+Color Wheel
+===============================
+*/
+
+.IroSlider,
+.IroWheel {
+  margin: 0 auto;
 }

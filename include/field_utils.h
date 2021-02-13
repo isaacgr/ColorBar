@@ -81,11 +81,11 @@ String setFieldValue(String name, String value, FieldList fields, uint8_t count)
     }
     if (field.type == ColorFieldType)
     {
-      String r = server.arg("r");
-      String g = server.arg("g");
-      String b = server.arg("b");
-      String combinedValue = r + "," + g + "," + b;
-      result = field.setValue(combinedValue);
+      // String r = server.arg("r");
+      // String g = server.arg("g");
+      // String b = server.arg("b");
+      // String combinedValue = r + "," + g + "," + b;
+      result = field.setValue(value);
     }
     else
     {
@@ -113,7 +113,7 @@ String getFieldOptions(String name, FieldList fields, uint8_t count)
 
 String getAllFields(FieldList fields, uint8_t count)
 {
-  StaticJsonDocument<1024> json;
+  StaticJsonDocument<2048> json;
 
   for (uint8_t i = 0; i < count; i++)
   {
@@ -121,6 +121,7 @@ String getAllFields(FieldList fields, uint8_t count)
     JsonObject object = json.createNestedObject();
     object["name"] = field.name;
     object["type"] = field.type;
+    object["isModifier"] = field.modifier;
 
     if (field.getValue)
     {

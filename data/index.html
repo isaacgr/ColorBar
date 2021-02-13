@@ -17,8 +17,9 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css"
     />
-
     <link href="./css/styles.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@jaames/iro"></script>
+
     <title>Backlight Color Bar</title>
   </head>
   <body>
@@ -66,6 +67,41 @@
             id="pattern-options"
           ></ul>
         </div>
+      </div>
+      <div class="content-block content-block--flex">
+        <div class="dropdown">
+          <h3 class="sub-title">Palette Selection</h3>
+          <button
+            class="btn btn-secondary dropdown-toggle"
+            type="button"
+            id="palette-selection"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          ></button>
+          <ul
+            class="dropdown-menu"
+            aria-labelledby="dropdownMenuButton"
+            id="palette-options"
+          ></ul>
+        </div>
+        <div class="dropdown">
+          <h3 class="sub-title">Temperature Selection</h3>
+          <button
+            class="btn btn-secondary dropdown-toggle"
+            type="button"
+            id="temperature-selection"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          ></button>
+          <ul
+            class="dropdown-menu"
+            aria-labelledby="dropdownMenuButton"
+            id="temperature-options"
+          ></ul>
+        </div>
+      </div>
+      <div class="content-block">
+        <div class="wheel" id="colorWheelDemo"></div>
       </div>
     </div>
     <script

@@ -13,6 +13,7 @@ public:
   String name;
   String label;
   String type;
+  bool modifier;
   uint8_t min;
   uint8_t max;
   FieldGetter getValue;
