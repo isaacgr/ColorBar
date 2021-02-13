@@ -142,8 +142,9 @@ body {
 
 .container {
   width: 90%;
-  height: 90%;
+  height: auto;
   margin: 1rem auto;
+  padding-bottom: 1rem;
 }
 
 a {

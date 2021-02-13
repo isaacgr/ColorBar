@@ -6,6 +6,7 @@ typedef struct TemperatureAndName
 typedef TemperatureAndName TemperatureAndNameList[];
 
 TemperatureAndNameList temperatures = {
+    {UncorrectedTemperature, "UncorrectedTemperature"},
     {Tungsten100W, "Tungsten100W"},
     {OvercastSky, "OvercastSky"},
     {Tungsten40W, "Tungsten40W"},
@@ -23,7 +24,6 @@ TemperatureAndNameList temperatures = {
     {SodiumVapor, "SodiumVapor"},
     {MetalHalide, "MetalHalide"},
     {HighPressureSodium, "HighPressureSodium"},
-    {UncorrectedTemperature, "UncorrectedTemperature"},
     {Candle, "Candle"},
 
 };

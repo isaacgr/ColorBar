@@ -2,6 +2,9 @@
 #include <pacifica.h>
 #include <fire.h>
 
+CFireEffect fire(NUM_LEDS, g_Cooling, g_Sparking, g_Sparks, g_SparkHeight, breversed, bmirrored);
+CFireEffect water(NUM_LEDS, g_Cooling, g_Sparking, g_Sparks, g_SparkHeight, breversed, bmirrored);
+
 void showRGB(const CRGB &rgb)
 {
   Serial.printf("R: %d\n", rgb.r);
@@ -16,14 +19,14 @@ FastLEDs built in rainbow generator
 void DrawRainbow()
 {
   fill_rainbow(leds, NUM_LEDS, g_Hue, 255 / NUM_LEDS);
-
+  FastLED.setTemperature(temperatures[currentTemperatureIndex].temperature);
   if (g_Cycle)
   {
     --g_Hue;
   }
-  if (g_ColorTemperature)
+  else
   {
-    FastLED.setTemperature(temperatures[currentTemperatureIndex].temperature);
+    g_Hue = 0;
   }
 }
 
@@ -37,11 +40,10 @@ void DrawMarquee()
   static byte j = HUE_BLUE;
   j += 4;
   byte k = j;
-
-  CRGB c;
+  CRGBPalette16 palette = palettes[currentPaletteIndex];
   for (int i = 0; i < NUM_LEDS; i++)
   {
-    leds[i] = c.setHue(k += 8);
+    leds[i] = ColorFromPalette(palette, k += 8);
   }
 
   static int scroll = 0;
@@ -69,11 +71,9 @@ void showSolidColor()
 Fire effect from Daves garage
 ===============================
 */
-CFireEffect fire(NUM_LEDS, g_Cooling, g_Sparking, g_Sparks, g_SparkHeight, breversed, bmirrored);
 
 void DrawFireEffect()
 {
-
   fire.DrawFire(HeatColors_p);
 };
 
@@ -85,8 +85,7 @@ Water effect
 
 void DrawWaterEffect()
 {
-  // CFireEffect fire(NUM_LEDS, g_Cooling, g_Sparking, g_Sparks, g_SparkHeight, breversed, bmirrored);
-  fire.DrawFire(IceColors_p);
+  water.DrawFire(IceColors_p);
 };
 
 /*
@@ -139,7 +138,7 @@ typedef struct
 typedef PatternAndName PatternAndNameList[];
 
 PatternAndNameList patterns = {
-    {DrawRainbow, "rainbow", "colorTemperature,palette"},
+    {DrawRainbow, "rainbow", "colorTemperature,cycling"},
     {pacifica_loop, "pacifica", ""},
     {DrawFireEffect, "fire", "sparking,cooling,sparks,sparkHeight,reversed,mirrored"},
     {DrawWaterEffect, "water", "sparking,cooling,sparks,sparkHeight,reversed,mirrored"},

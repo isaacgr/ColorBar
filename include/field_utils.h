@@ -111,6 +111,19 @@ String getFieldOptions(String name, FieldList fields, uint8_t count)
   }
 }
 
+String getFieldModifiers(String name, FieldList fields, uint8_t count)
+{
+  Field field = getField(name, fields, count);
+  if (field.getModifiers)
+  {
+    return field.getModifiers();
+  }
+  else
+  {
+    return String();
+  }
+}
+
 String getAllFields(FieldList fields, uint8_t count)
 {
   StaticJsonDocument<2048> json;

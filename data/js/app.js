@@ -85,6 +85,7 @@ function handlePattern(field) {
     })
     .join("");
   document.getElementById("pattern-options").innerHTML = items;
+  getInvalidModifiers();
 }
 
 function updatePattern(pattern) {
@@ -93,8 +94,43 @@ function updatePattern(pattern) {
       document.getElementById(
         "pattern-selection"
       ).innerHTML = result.newValue.split(/(?=[A-Z])/).join(" ");
+      getInvalidModifiers();
     })
     .catch((error) => setError(error));
+}
+
+function getInvalidModifiers() {
+  getFieldModifiers("pattern").then((result) => {
+    const ids = [...document.querySelectorAll("#modifiers > table tr")].map(
+      ({ id }) => id
+    );
+    ids.forEach((modifier) => {
+      document.getElementById(modifier).style.display = "";
+    });
+    const modifiers = result.modifiers.split(",");
+    const invalidModifiers = ids.filter((id) => !modifiers.includes(id));
+    invalidModifiers.forEach((modifier) => {
+      document.getElementById(modifier).style.display = "none";
+    });
+  });
+}
+
+function updateModifier(id, value) {
+  if (value === true || value === false) {
+    setField(id.split("-")[0], value === true ? "1" : "0").catch((error) =>
+      setError(error)
+    );
+  } else {
+    setField(id.split("-")[0], value).catch((error) => setError(error));
+  }
+}
+
+function handleModifier(id, value, type) {
+  document.getElementById(`${id}-input`).value = value;
+  if (type === "Boolean") {
+    document.getElementById(`${id}-input`).checked =
+      value === "1" ? true : false;
+  }
 }
 
 function handlePalette(field) {
@@ -169,6 +205,8 @@ function populateFields(json) {
       handlePalette(field);
     } else if (field.name === "colorTemperature") {
       handleColorTemperature(field);
+    } else if (field.isModifier === true) {
+      handleModifier(field.name, field.value, field.type);
     }
   });
 }
@@ -192,6 +230,17 @@ function setField(name, value) {
       return response.json();
     })
     .then((json) => json);
+}
+
+function getFieldModifiers(name) {
+  return fetch(`${url}/fieldModifiers?name=${name}`)
+    .then((response) => {
+      return response.json();
+    })
+    .then((json) => json)
+    .catch((error) => {
+      setError(error);
+    });
 }
 
 function getLedInfo() {

@@ -50,13 +50,13 @@ unsigned long paletteTimeout = 0;
 // modifiers
 uint8_t g_ColorTemperature = 0;
 uint8_t g_ColorPalette = 0;
-uint8_t g_Cycle = 0;
 uint8_t g_Sparking = 100;
 uint8_t g_Cooling = 20;
 uint8_t g_Sparks = 3;
 uint8_t g_SparkHeight = 4;
 bool breversed = false;
 bool bmirrored = false;
+bool g_Cycle = false;
 uint8_t g_Speed = 30;
 
 CRGB solidColor = CRGB::Blue;

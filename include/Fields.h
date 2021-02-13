@@ -1,3 +1,15 @@
+bool toBoolean(String value)
+{
+  if (value == "0" || value == "false")
+  {
+    return false;
+  }
+  else
+  {
+    return true;
+  }
+}
+
 /*
 ===============================
 Power
@@ -39,6 +51,11 @@ Pattern
 String getPattern()
 {
   return patterns[currentPatternIndex].name;
+}
+
+String getPatternModifiers()
+{
+  return patterns[currentPatternIndex].modifiers;
 }
 
 void setPattern(uint8_t value)
@@ -244,6 +261,10 @@ String getMirrored()
 {
   return String(bmirrored);
 }
+String getCycling()
+{
+  return String(g_Cycle);
+}
 String setCooling(String value)
 {
   g_Cooling = value.toInt();
@@ -256,15 +277,19 @@ String setSparking(String value)
 }
 String setReversed(String value)
 {
-  breversed = bool(value);
+  breversed = toBoolean(value);
   return String(breversed);
 }
 String setMirrored(String value)
 {
-  bmirrored = bool(value);
+  bmirrored = toBoolean(value);
   return String(bmirrored);
 }
-
+String setCycling(String value)
+{
+  g_Cycle = toBoolean(value);
+  return String(g_Cycle);
+}
 /*
 ===============================
 FastLED Info
@@ -310,7 +335,7 @@ FieldList fields = {
     {"power", "Power", NumberFieldType, false, 0, 1, getPower, NULL, setPower},
     {"brightness", "Brightness", NumberFieldType, false, 1, 255, getBrightness, NULL, setBrightness},
 
-    {"pattern", "Pattern", SelectFieldType, false, 0, patternCount, getPattern, getPatterns, setPattern},
+    {"pattern", "Pattern", SelectFieldType, false, 0, patternCount, getPattern, getPatterns, setPattern, getPatternModifiers},
     {"solidColor", "SolidColor", ColorFieldType, false, 0, 255, getSolidColor, NULL, setSolidColor},
 
     // modifiers
@@ -320,6 +345,7 @@ FieldList fields = {
     {"sparking", "Sparking", NumberFieldType, true, 0, 255, getSparking, NULL, setSparking},
     {"reversed", "Reversed", BooleanFieldType, true, 0, 1, getReversed, NULL, setReversed},
     {"mirrored", "Mirrored", BooleanFieldType, true, 0, 1, getMirrored, NULL, setMirrored},
+    {"cycling", "Cycling", BooleanFieldType, true, 0, 1, getCycling, NULL, setCycling},
 };
 
 uint8_t fieldCount = ARRAY_SIZE(fields);

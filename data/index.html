@@ -68,37 +68,106 @@
           ></ul>
         </div>
       </div>
-      <div class="content-block content-block--flex">
-        <div class="dropdown">
-          <h3 class="sub-title">Palette Selection</h3>
-          <button
-            class="btn btn-secondary dropdown-toggle"
-            type="button"
-            id="palette-selection"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          ></button>
-          <ul
-            class="dropdown-menu"
-            aria-labelledby="dropdownMenuButton"
-            id="palette-options"
-          ></ul>
-        </div>
-        <div class="dropdown">
-          <h3 class="sub-title">Temperature Selection</h3>
-          <button
-            class="btn btn-secondary dropdown-toggle"
-            type="button"
-            id="temperature-selection"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          ></button>
-          <ul
-            class="dropdown-menu"
-            aria-labelledby="dropdownMenuButton"
-            id="temperature-options"
-          ></ul>
-        </div>
+      <div id="modifiers" class="content-block content-block--flex">
+        <table>
+          <tr id="palette">
+            <td>Palette</td>
+            <td>
+              <div class="dropdown">
+                <button
+                  class="dropdown-toggle"
+                  type="button"
+                  id="palette-selection"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                ></button>
+                <ul
+                  class="dropdown-menu"
+                  aria-labelledby="dropdownMenuButton"
+                  id="palette-options"
+                ></ul>
+              </div>
+            </td>
+          </tr>
+          <tr id="colorTemperature">
+            <td>Temperature</td>
+            <td>
+              <div class="dropdown">
+                <button
+                  class="dropdown-toggle"
+                  type="button"
+                  id="temperature-selection"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                ></button>
+                <ul
+                  class="dropdown-menu"
+                  aria-labelledby="dropdownMenuButton"
+                  id="temperature-options"
+                ></ul>
+              </div>
+            </td>
+          </tr>
+          <tr id="cycling">
+            <td>Cycling</td>
+            <td>
+              <input
+                type="checkbox"
+                name=""
+                id="cycling-input"
+                onchange="updateModifier(this.id, this.checked)"
+              />
+            </td>
+          </tr>
+          <tr id="cooling">
+            <td>Cooling</td>
+            <td>
+              <input
+                type="number"
+                name=""
+                id="cooling-input"
+                min="0"
+                max="255"
+                onchange="updateModifier(this.id, this.value)"
+              />
+            </td>
+          </tr>
+          <tr id="sparking">
+            <td>Sparking</td>
+            <td>
+              <input
+                type="number"
+                name=""
+                id="sparking-input"
+                min="0"
+                max="255"
+                onchange="updateModifier(this.id, this.value)"
+              />
+            </td>
+          </tr>
+          <tr id="reversed">
+            <td>Reversed</td>
+            <td>
+              <input
+                type="checkbox"
+                name=""
+                id="reversed-input"
+                onchange="updateModifier(this.id, this.checked)"
+              />
+            </td>
+          </tr>
+          <tr id="mirrored">
+            <td>Mirrored</td>
+            <td>
+              <input
+                type="checkbox"
+                name=""
+                id="mirrored-input"
+                onchange="updateModifier(this.id, this.checked)"
+              />
+            </td>
+          </tr>
+        </table>
       </div>
       <div class="content-block">
         <div class="wheel" id="colorWheelDemo"></div>

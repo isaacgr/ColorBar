@@ -21,6 +21,17 @@ void setupWeb()
     server.send(200, "application/json", result);
   });
 
+  server.on("/fieldModifiers", HTTP_GET, []() {
+    String name = server.arg("name");
+    String value = getFieldModifiers(name, fields, fieldCount);
+    StaticJsonDocument<512> root;
+    root["name"] = name;
+    root["modifiers"] = value;
+    String result;
+    serializeJsonPretty(root, result);
+    server.send(200, "application/json", result);
+  });
+
   server.on("/fieldValue", HTTP_GET, []() {
     String name = server.arg("name");
     String value = getFieldValue(name, fields, fieldCount);

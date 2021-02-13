@@ -19,6 +19,8 @@ public:
   FieldGetter getValue;
   FieldGetter getOptions;
   FieldSetter setValue;
+  FieldGetter getModifiers;
+
 } Field;
 
 typedef Field FieldList[];
