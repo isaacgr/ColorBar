@@ -21,10 +21,14 @@
 #define OLED_DATA 21
 #define OLED_RESET 16
 
-#define NUM_LEDS 45
-#define LED_PIN 5
+#define NUM_STRIPS 2
+#define LEDS_PER_STRIP 72
+#define NUM_LEDS NUM_STRIPS *LEDS_PER_STRIP
+#define LED_PIN_STRIP_1 5
+#define LED_PIN_STRIP_2 13
 #define COLOR_SEQUENCE GRB
 #define CHIPSET WS2812B
+#define MILLI_AMPS 4000 // IMPORTANT: set the max milli-Amps of your power supply (4A = 4000mA)
 
 #define FRAMES_PER_SECOND 120
 
@@ -57,7 +61,7 @@ uint8_t g_SparkHeight = 4;
 bool breversed = false;
 bool bmirrored = false;
 bool g_Cycle = false;
-uint8_t g_Speed = 30;
+uint8_t g_Speed = 20;
 
 CRGB solidColor = CRGB::Blue;
 
@@ -75,7 +79,8 @@ CRGB solidColor = CRGB::Blue;
 void setup()
 {
   pinMode(LED_BUILTIN, OUTPUT);
-  pinMode(LED_PIN, OUTPUT);
+  pinMode(LED_PIN_STRIP_1, OUTPUT);
+  pinMode(LED_PIN_STRIP_2, OUTPUT);
   Serial.begin(115200);
   while (!Serial)
   {
@@ -96,17 +101,17 @@ void setup()
   g_OLED.setFont(u8g2_font_profont15_tf);
   g_lineHeight = g_OLED.getFontAscent() - g_OLED.getFontDescent(); // decent is a negative number, so subtract from the total
 
-  FastLED.addLeds<CHIPSET, LED_PIN, COLOR_SEQUENCE>(leds, NUM_LEDS);
+  FastLED.addLeds<CHIPSET, LED_PIN_STRIP_1, COLOR_SEQUENCE>(leds, 0, LEDS_PER_STRIP).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<CHIPSET, LED_PIN_STRIP_2, COLOR_SEQUENCE>(leds, LEDS_PER_STRIP, LEDS_PER_STRIP).setCorrection(TypicalLEDStrip);
 
   set_max_power_indicator_LED(LED_BUILTIN); // turn on the builtin led when the power throttling kicks in
-  FastLED.setMaxPowerInMilliWatts(g_PowerLimit);
+  FastLED.setMaxPowerInVoltsAndMilliamps(5, MILLI_AMPS);
   FastLED.setBrightness(g_Brightness);
 }
 
 void loop()
 {
   server.handleClient();
-  FastLED.clear();
   if (g_Power == 0)
   {
     fill_solid(leds, NUM_LEDS, CRGB::Black);

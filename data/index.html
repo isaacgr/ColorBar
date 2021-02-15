@@ -71,11 +71,11 @@
       <div id="modifiers" class="content-block content-block--flex">
         <table>
           <tr id="palette">
-            <td>Palette</td>
+            <td class="sub-title">Palette</td>
             <td>
               <div class="dropdown">
                 <button
-                  class="dropdown-toggle"
+                  class="btn btn-sm btn-secondary dropdown-toggle"
                   type="button"
                   id="palette-selection"
                   data-bs-toggle="dropdown"
@@ -90,11 +90,11 @@
             </td>
           </tr>
           <tr id="colorTemperature">
-            <td>Temperature</td>
+            <td class="sub-title">Temperature</td>
             <td>
               <div class="dropdown">
                 <button
-                  class="dropdown-toggle"
+                  class="btn btn-sm btn-secondary dropdown-toggle"
                   type="button"
                   id="temperature-selection"
                   data-bs-toggle="dropdown"
@@ -108,19 +108,9 @@
               </div>
             </td>
           </tr>
-          <tr id="cycling">
-            <td>Cycling</td>
-            <td>
-              <input
-                type="checkbox"
-                name=""
-                id="cycling-input"
-                onchange="updateModifier(this.id, this.checked)"
-              />
-            </td>
-          </tr>
+
           <tr id="cooling">
-            <td>Cooling</td>
+            <td class="sub-title">Cooling</td>
             <td>
               <input
                 type="number"
@@ -128,12 +118,13 @@
                 id="cooling-input"
                 min="0"
                 max="255"
+                class="input-group-text"
                 onchange="updateModifier(this.id, this.value)"
               />
             </td>
           </tr>
           <tr id="sparking">
-            <td>Sparking</td>
+            <td class="sub-title">Sparking</td>
             <td>
               <input
                 type="number"
@@ -141,28 +132,57 @@
                 id="sparking-input"
                 min="0"
                 max="255"
+                class="input-group-text"
                 onchange="updateModifier(this.id, this.value)"
               />
             </td>
           </tr>
+          <tr id="speed">
+            <td class="sub-title">Speed</td>
+            <td>
+              <input
+                type="number"
+                name=""
+                min="1"
+                max="255"
+                id="speed-input"
+                class="input-group-text"
+                onchange="updateModifier(this.id, this.value)"
+              />
+            </td>
+          </tr>
+          <tr id="cycling">
+            <td class="sub-title">Cycling</td>
+            <td>
+              <input
+                type="checkbox"
+                name=""
+                id="cycling-input"
+                class="form-check-input"
+                onchange="updateModifier(this.id, this.checked)"
+              />
+            </td>
+          </tr>
           <tr id="reversed">
-            <td>Reversed</td>
+            <td class="sub-title">Reversed</td>
             <td>
               <input
                 type="checkbox"
                 name=""
                 id="reversed-input"
+                class="form-check-input"
                 onchange="updateModifier(this.id, this.checked)"
               />
             </td>
           </tr>
           <tr id="mirrored">
-            <td>Mirrored</td>
+            <td class="sub-title">Mirrored</td>
             <td>
               <input
                 type="checkbox"
                 name=""
                 id="mirrored-input"
+                class="form-check-input"
                 onchange="updateModifier(this.id, this.checked)"
               />
             </td>

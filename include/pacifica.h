@@ -95,6 +95,7 @@ void pacifica_deepen_colors()
 
 void pacifica_loop()
 {
+  FastLED.clear();
   // Increment the four "color index start" counters, one for each wave layer.
   // Each is incremented at a different speed, and the speeds vary over time.
   static uint16_t sCIStart1, sCIStart2, sCIStart3, sCIStart4;

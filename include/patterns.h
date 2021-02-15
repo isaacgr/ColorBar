@@ -2,9 +2,6 @@
 #include <pacifica.h>
 #include <fire.h>
 
-CFireEffect fire(NUM_LEDS, g_Cooling, g_Sparking, g_Sparks, g_SparkHeight, breversed, bmirrored);
-CFireEffect water(NUM_LEDS, g_Cooling, g_Sparking, g_Sparks, g_SparkHeight, breversed, bmirrored);
-
 void showRGB(const CRGB &rgb)
 {
   Serial.printf("R: %d\n", rgb.r);
@@ -18,7 +15,7 @@ FastLEDs built in rainbow generator
 */
 void DrawRainbow()
 {
-  fill_rainbow(leds, NUM_LEDS, g_Hue, 255 / NUM_LEDS);
+  fill_rainbow(leds, NUM_LEDS, g_Hue, g_Speed);
   FastLED.setTemperature(temperatures[currentTemperatureIndex].temperature);
   if (g_Cycle)
   {
@@ -53,7 +50,7 @@ void DrawMarquee()
   {
     leds[i] = CRGB::Black;
   }
-  delay(50);
+  FastLED.delay(50);
 }
 
 /*
@@ -74,7 +71,8 @@ Fire effect from Daves garage
 
 void DrawFireEffect()
 {
-  fire.DrawFire(HeatColors_p);
+  FastLED.clear();
+  DrawFire(HeatColors_p);
 };
 
 /*
@@ -85,7 +83,8 @@ Water effect
 
 void DrawWaterEffect()
 {
-  water.DrawFire(IceColors_p);
+  FastLED.clear();
+  DrawFire(IceColors_p);
 };
 
 /*
@@ -127,6 +126,44 @@ void sinelon()
   prevpos = pos;
 }
 
+/*
+===============================
+Comet effect
+===============================
+*/
+void DrawComet()
+{
+  const byte fadeAmt = 128;
+  const int cometSize = 5;
+  const int deltaHue = 4;
+
+  static byte hue = HUE_RED;
+  static int iDirection = 1;
+  static int iPos = 0;
+
+  hue += deltaHue;
+  iPos += iDirection;
+
+  if (iPos == (NUM_LEDS - cometSize) || iPos == 0)
+  {
+    iDirection *= -1;
+  }
+
+  for (int i = 0; i < cometSize; i++)
+  {
+    leds[iPos + i].setHue(hue);
+  }
+
+  for (int j = 0; j < NUM_LEDS; j++)
+  {
+    if (random(10) > 5)
+    {
+      leds[j] = leds[j].fadeToBlackBy(fadeAmt);
+    }
+  }
+  FastLED.delay(g_Speed);
+}
+
 typedef void (*Pattern)();
 typedef Pattern PatternList[];
 typedef struct
@@ -138,14 +175,15 @@ typedef struct
 typedef PatternAndName PatternAndNameList[];
 
 PatternAndNameList patterns = {
-    {DrawRainbow, "rainbow", "colorTemperature,cycling"},
+    {DrawRainbow, "rainbow", "colorTemperature,cycling,speed"},
     {pacifica_loop, "pacifica", ""},
     {DrawFireEffect, "fire", "sparking,cooling,sparks,sparkHeight,reversed,mirrored"},
     {DrawWaterEffect, "water", "sparking,cooling,sparks,sparkHeight,reversed,mirrored"},
     {DrawMarquee, "marquee", "colorTemperature,palette"},
     {showSolidColor, "solidColor", ""},
-    {bpm, "bpm", "palette"},
-    {sinelon, "sinelon", "palette"},
+    {bpm, "bpm", "palette,speed"},
+    {sinelon, "sinelon", "palette,speed"},
+    {DrawComet, "comet", "speed"},
 };
 
 uint8_t patternCount = ARRAY_SIZE(patterns);

@@ -7,7 +7,7 @@
 
 void setupMDNS()
 {
-  if (MDNS.begin("esp32"))
+  if (MDNS.begin("tv"))
   { // Start the mDNS responder for esp8266.local
     Serial.println("mDNS responder started");
   }

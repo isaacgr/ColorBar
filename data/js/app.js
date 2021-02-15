@@ -1,5 +1,5 @@
 // used when hosting the site on the ESP8266
-var url = "http://esp32.local";
+var url = "http://tv.local";
 var urlBase = "";
 
 // used when hosting the site somewhere other than the ESP8266 (handy for testing without waiting forever to upload to SPIFFS)
@@ -248,7 +248,10 @@ function getLedInfo() {
     .then((response) => {
       return response.json();
     })
-    .then((json) => populateInfoTable(json))
+    .then((json) => {
+      populateInfoTable(json);
+      setTimeout(getLedInfo, 10000);
+    })
     .catch((error) => {
       setError(error);
     });

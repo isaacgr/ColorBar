@@ -265,6 +265,10 @@ String getCycling()
 {
   return String(g_Cycle);
 }
+String getSpeed()
+{
+  return String(g_Speed);
+}
 String setCooling(String value)
 {
   g_Cooling = value.toInt();
@@ -290,6 +294,11 @@ String setCycling(String value)
   g_Cycle = toBoolean(value);
   return String(g_Cycle);
 }
+String setSpeed(String value)
+{
+  g_Speed = value.toInt();
+  return String(g_Speed);
+}
 /*
 ===============================
 FastLED Info
@@ -309,8 +318,8 @@ String getFastLedInfo()
   InfoList fastLedInfo = {
       {"fps", FastLED.getFPS()},
       {"power (mW)", calculate_unscaled_power_mW(leds, NUM_LEDS)},
-      {"max_brightness", calculate_max_brightness_for_power_mW(255, g_PowerLimit)},
-      {"power_limit (mW)", g_PowerLimit},
+      {"max_brightness", calculate_max_brightness_for_power_mW(255, 5 * MILLI_AMPS)},
+      {"power_limit (mW)", 5 * MILLI_AMPS},
   };
 
   const uint8_t infoCount = ARRAY_SIZE(fastLedInfo);
@@ -346,6 +355,7 @@ FieldList fields = {
     {"reversed", "Reversed", BooleanFieldType, true, 0, 1, getReversed, NULL, setReversed},
     {"mirrored", "Mirrored", BooleanFieldType, true, 0, 1, getMirrored, NULL, setMirrored},
     {"cycling", "Cycling", BooleanFieldType, true, 0, 1, getCycling, NULL, setCycling},
+    {"speed", "Speed", NumberFieldType, true, 0, 255, getSpeed, NULL, setSpeed},
 };
 
 uint8_t fieldCount = ARRAY_SIZE(fields);

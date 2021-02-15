@@ -294,3 +294,13 @@ Color Wheel
 .IroWheel {
   margin: 0 auto;
 }
+
+/*
+===============================
+Table
+===============================
+*/
+
+td.sub-title {
+  padding-right: 1rem;
+}
