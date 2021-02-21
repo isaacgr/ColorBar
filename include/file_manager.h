@@ -29,10 +29,8 @@ String getContentType(String filename)
 
 bool handleFileRead(String path)
 { // send the right file to the client (if it exists)
-  Serial.println("handleFileRead: " + path);
   if (path.endsWith("/"))
-    path += "index.html"; // If a folder is requested, send the index file
-  Serial.println(path);
+    path += "index.html";                    // If a folder is requested, send the index file
   String contentType = getContentType(path); // Get the MIME type
   String pathWithGz = path + ".gz";
   if (SPIFFS.exists(pathWithGz) || SPIFFS.exists(path))
@@ -41,11 +39,8 @@ bool handleFileRead(String path)
       path += ".gz";                                    // If the file exists
     File file = SPIFFS.open(path, "r");                 // Open it
     size_t sent = server.streamFile(file, contentType); // And send it to the client
-    Serial.println(String("\tSent file: ") + path);
-    file.close(); // Then close the file again
+    file.close();                                       // Then close the file again
     return true;
   }
-
-  Serial.println("\tFile Not Found");
   return false; // If the file doesn't exist, return false
 }

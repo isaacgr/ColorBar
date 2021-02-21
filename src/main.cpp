@@ -25,7 +25,7 @@
 #define LEDS_PER_STRIP 72
 #define NUM_LEDS NUM_STRIPS *LEDS_PER_STRIP
 #define LED_PIN_STRIP_1 5
-#define LED_PIN_STRIP_2 13
+#define LED_PIN_STRIP_2 17
 #define COLOR_SEQUENCE GRB
 #define CHIPSET WS2812B
 #define MILLI_AMPS 4000 // IMPORTANT: set the max milli-Amps of your power supply (4A = 4000mA)
@@ -38,8 +38,7 @@ U8G2_SSD1306_128X64_NONAME_F_HW_I2C g_OLED(U8G2_R0, OLED_RESET, OLED_CLOCK, OLED
 WebServer server(80);
 
 uint8_t g_lineHeight = 0;
-uint8_t g_Brightness = 255;
-uint16_t g_PowerLimit = 900;
+uint8_t g_Brightness = 128;
 uint8_t g_Power = 1;
 uint8_t g_Hue = 0; // rotating "base color" used by many of the patterns
 
@@ -47,7 +46,6 @@ uint8_t currentPatternIndex = 0;
 uint8_t currentTemperatureIndex = 0;
 
 uint8_t cyclePalettes = 0;
-uint8_t paletteDuration = 10;
 uint8_t currentPaletteIndex = 0;
 unsigned long paletteTimeout = 0;
 
@@ -87,7 +85,6 @@ void setup()
   }
   setupWifi();
   setupMDNS();
-
   // SPIFFS.format(); // Prevents SPIFFS_ERR_NOT_A_FS
   SPIFFS.begin(); // Start the SPI Flash Files System
 
@@ -96,13 +93,13 @@ void setup()
   setupWeb();
 
   Serial.println("HTTP server started");
-  g_OLED.clear();
-  g_OLED.begin();
-  g_OLED.setFont(u8g2_font_profont15_tf);
-  g_lineHeight = g_OLED.getFontAscent() - g_OLED.getFontDescent(); // decent is a negative number, so subtract from the total
+  // g_OLED.clear();
+  // g_OLED.begin();
+  // g_OLED.setFont(u8g2_font_profont15_tf);
+  // g_lineHeight = g_OLED.getFontAscent() - g_OLED.getFontDescent(); // decent is a negative number, so subtract from the total
 
   FastLED.addLeds<CHIPSET, LED_PIN_STRIP_1, COLOR_SEQUENCE>(leds, 0, LEDS_PER_STRIP).setCorrection(TypicalLEDStrip);
-  FastLED.addLeds<CHIPSET, LED_PIN_STRIP_2, COLOR_SEQUENCE>(leds, LEDS_PER_STRIP, LEDS_PER_STRIP).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<CHIPSET, LED_PIN_STRIP_2, COLOR_SEQUENCE>(leds, LEDS_PER_STRIP + 1, LEDS_PER_STRIP).setCorrection(TypicalLEDStrip);
 
   set_max_power_indicator_LED(LED_BUILTIN); // turn on the builtin led when the power throttling kicks in
   FastLED.setMaxPowerInVoltsAndMilliamps(5, MILLI_AMPS);

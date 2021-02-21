@@ -34,6 +34,7 @@ Marquee effect from Daves Garage
 */
 void DrawMarquee()
 {
+  FastLED.setTemperature(temperatures[currentTemperatureIndex].temperature);
   static byte j = HUE_BLUE;
   j += 4;
   byte k = j;
@@ -60,6 +61,7 @@ Solid color
 */
 void showSolidColor()
 {
+  FastLED.setTemperature(temperatures[0].temperature);
   fill_solid(leds, NUM_LEDS, solidColor);
 }
 
@@ -72,6 +74,8 @@ Fire effect from Daves garage
 void DrawFireEffect()
 {
   FastLED.clear();
+  FastLED.setTemperature(temperatures[0].temperature);
+
   DrawFire(HeatColors_p);
 };
 
@@ -84,6 +88,8 @@ Water effect
 void DrawWaterEffect()
 {
   FastLED.clear();
+  FastLED.setTemperature(temperatures[0].temperature);
+
   DrawFire(IceColors_p);
 };
 
@@ -95,6 +101,7 @@ a defined bpm
 */
 void bpm()
 {
+  FastLED.setTemperature(temperatures[0].temperature);
   uint8_t beat = beatsin8(g_Speed, 64, 255);
   CRGBPalette16 palette = palettes[currentPaletteIndex];
   for (int i = 0; i < NUM_LEDS; i++)
@@ -110,6 +117,7 @@ forth with fading trails
 */
 void sinelon()
 {
+  FastLED.setTemperature(temperatures[0].temperature);
   // a colored dot sweeping back and forth, with fading trails
   fadeToBlackBy(leds, NUM_LEDS, 20);
   int pos = beatsin16(g_Speed, 0, NUM_LEDS - 1);
@@ -133,6 +141,7 @@ Comet effect
 */
 void DrawComet()
 {
+  FastLED.setTemperature(temperatures[0].temperature);
   const byte fadeAmt = 128;
   const int cometSize = 5;
   const int deltaHue = 4;

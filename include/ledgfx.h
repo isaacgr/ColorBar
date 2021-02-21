@@ -29,7 +29,7 @@ void DrawPixels(float fPos, float count, CRGB color)
   // Calculate how much the first pixel will hold
   float availFirstPixel = 1.0f - (fPos - (long)(fPos));
   float amtFirstPixel = min(availFirstPixel, count);
-  float remaining = min(count, FastLED.size() - fPos);
+  float remaining = min(count, NUM_LEDS - fPos);
   int iPos = fPos;
 
   // Blend (add) in the color of the first partial pixel

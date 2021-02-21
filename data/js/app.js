@@ -283,5 +283,9 @@ function setError(error) {
   document.getElementById("error").innerHTML = `Error: ${error.message}`;
 }
 
-getLedInfo();
-getAllInfo();
+function setup() {
+  getLedInfo();
+  getAllInfo();
+}
+
+setup();
