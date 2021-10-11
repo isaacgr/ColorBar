@@ -104,6 +104,8 @@ void setup()
   set_max_power_indicator_LED(LED_BUILTIN); // turn on the builtin led when the power throttling kicks in
   FastLED.setMaxPowerInVoltsAndMilliamps(5, MILLI_AMPS);
   FastLED.setBrightness(g_Brightness);
+
+  loadFieldsFromEEPROM(fields, fieldCount);
 }
 
 void loop()
