@@ -26,10 +26,9 @@ void writeFieldsToEEPROM(FieldList fields, uint8_t count)
     if (!field.getValue && !field.setValue)
       continue;
 
-    String value = field.getValue();
-
     if (field.type == ColorFieldType)
     {
+      String value = field.getValue();
       CRGB color = parseColor(value);
       EEPROM.write(index++, color.r);
       EEPROM.write(index++, color.g);
@@ -37,12 +36,81 @@ void writeFieldsToEEPROM(FieldList fields, uint8_t count)
     }
     else
     {
-      byte v = value.toInt();
-      EEPROM.write(index++, v);
+      if (field.type == SelectFieldType)
+      {
+        byte v = field.getValueIndex();
+        EEPROM.write(index++, v);
+      }
+      else
+      {
+        String value = field.getValue();
+        byte v = value.toInt();
+        EEPROM.write(index++, v);
+      }
     }
   }
 
   EEPROM.commit();
+}
+
+void loadFieldsFromEEPROM(FieldList fields, uint8_t count)
+{
+  uint8_t byteCount = 1;
+  for (uint8_t i = 0; i < count; i++)
+  {
+    Field field = fields[i];
+    if (!field.setValue)
+      continue;
+
+    if (field.type == ColorFieldType)
+    {
+      byteCount += 3;
+    }
+    else
+    {
+      byteCount++;
+    }
+  }
+  if (!EEPROM.begin(count))
+  {
+    Serial.println("Failed to initialize EEPROM!");
+    return;
+  }
+
+  if (EEPROM.read(0) == 255)
+  {
+    Serial.println("First run, or EEPROM erased, skipping settings load!");
+    return;
+  }
+
+  uint8_t index = 0;
+
+  for (uint8_t i = 0; i < count; i++)
+  {
+    Field field = fields[i];
+    if (!field.setValue)
+      continue;
+
+    if (field.type == ColorFieldType)
+    {
+      String r = String(EEPROM.read(index++));
+      String g = String(EEPROM.read(index++));
+      String b = String(EEPROM.read(index++));
+      field.setValue(r + "," + g + "," + b);
+    }
+    else
+    {
+      byte v = EEPROM.read(index++);
+      if (field.type == SelectFieldType)
+      {
+        field.setByValue(uint8_t(v));
+      }
+      else
+      {
+        field.setValue(String(v));
+      }
+    }
+  }
 }
 
 Field getField(String name, FieldList fields, uint8_t count)
@@ -93,7 +161,7 @@ String setFieldValue(String name, String value, FieldList fields, uint8_t count)
     }
   }
 
-  // writeFieldsToEEPROM(fields, count);
+  writeFieldsToEEPROM(fields, count);
 
   return result;
 }

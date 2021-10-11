@@ -1,5 +1,7 @@
 typedef String (*FieldSetter)(String);
 typedef String (*FieldGetter)();
+typedef void (*FieldValueSetter)(uint8_t);
+typedef uint8_t (*FieldIndexGetter)();
 
 const String NumberFieldType = "Number";
 const String BooleanFieldType = "Boolean";
@@ -20,6 +22,8 @@ public:
   FieldGetter getOptions;
   FieldSetter setValue;
   FieldGetter getModifiers;
+  FieldValueSetter setByValue;
+  FieldIndexGetter getValueIndex;
 
 } Field;
 

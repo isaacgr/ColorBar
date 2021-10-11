@@ -53,12 +53,17 @@ String getPattern()
   return patterns[currentPatternIndex].name;
 }
 
+uint8_t getPatternIndex()
+{
+  return currentPatternIndex;
+}
+
 String getPatternModifiers()
 {
   return patterns[currentPatternIndex].modifiers;
 }
 
-void setPattern(uint8_t value)
+void setPatternByValue(uint8_t value)
 {
   if (value >= patternCount)
     value = patternCount - 1;
@@ -79,7 +84,7 @@ String setPattern(String patternName)
   }
   if (i < patternCount)
   {
-    setPattern(i);
+    setPatternByValue(i);
     return String(patterns[currentPatternIndex].name);
   }
   else
@@ -112,7 +117,12 @@ String getPalette()
   return paletteNames[currentPaletteIndex];
 }
 
-void setPalette(uint8_t value)
+uint8_t getPaletteIndex()
+{
+  return currentPaletteIndex;
+}
+
+void setPaletteByValue(uint8_t value)
 {
   if (value >= paletteCount)
     value = paletteCount - 1;
@@ -133,7 +143,7 @@ String setPalette(String paletteName)
   }
   if (i < paletteCount)
   {
-    setPalette(i);
+    setPaletteByValue(i);
     return String(paletteNames[currentPaletteIndex]);
   }
   else
@@ -344,12 +354,12 @@ FieldList fields = {
     {"power", "Power", NumberFieldType, false, 0, 1, getPower, NULL, setPower},
     {"brightness", "Brightness", NumberFieldType, false, 1, 255, getBrightness, NULL, setBrightness},
 
-    {"pattern", "Pattern", SelectFieldType, false, 0, patternCount, getPattern, getPatterns, setPattern, getPatternModifiers},
+    {"pattern", "Pattern", SelectFieldType, false, 0, patternCount, getPattern, getPatterns, setPattern, getPatternModifiers, setPatternByValue, getPatternIndex},
     {"solidColor", "SolidColor", ColorFieldType, false, 0, 255, getSolidColor, NULL, setSolidColor},
 
     // modifiers
-    {"palette", "Palette", SelectFieldType, true, 0, paletteCount, getPalette, getPalettes, setPalette},
-    {"colorTemperature", "ColorTemperature", SelectFieldType, true, 0, colorCount, getColorTemperature, getColorTemperatures, setColorTemperature},
+    {"palette", "Palette", SelectFieldType, true, 0, paletteCount, getPalette, getPalettes, setPalette, NULL, setPaletteByValue, getPaletteIndex},
+    // {"colorTemperature", "ColorTemperature", SelectFieldType, true, 0, colorCount, getColorTemperature, getColorTemperatures, setColorTemperature},
     {"cooling", "Cooling", NumberFieldType, true, 0, 255, getCooling, NULL, setCooling},
     {"sparking", "Sparking", NumberFieldType, true, 0, 255, getSparking, NULL, setSparking},
     {"reversed", "Reversed", BooleanFieldType, true, 0, 1, getReversed, NULL, setReversed},
