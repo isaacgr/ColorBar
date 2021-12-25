@@ -29,8 +29,14 @@ String getContentType(String filename)
 
 bool handleFileRead(String path)
 { // send the right file to the client (if it exists)
-  if (path.endsWith("/"))
-    path += "index.html";                    // If a folder is requested, send the index file
+  if (path.endsWith("/") && !apMode)
+  {
+    path += "index.html"; // If a folder is requested, send the index file
+  }
+  else if (path.endsWith("/") && apMode)
+  {
+    path += "connect.html";
+  }
   String contentType = getContentType(path); // Get the MIME type
   String pathWithGz = path + ".gz";
   if (SPIFFS.exists(pathWithGz) || SPIFFS.exists(path))

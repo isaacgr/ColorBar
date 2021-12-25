@@ -1,16 +1,17 @@
 void setupWeb()
 {
-  server.on("/all", HTTP_GET, []() {
+  server.on("/all", HTTP_GET, []()
+            {
     String json = getAllFields(fields, fieldCount);
-    server.send(200, "application/json", json);
-  });
+    server.send(200, "application/json", json); });
 
-  server.on("/fastLedInfo", HTTP_GET, []() {
+  server.on("/fastLedInfo", HTTP_GET, []()
+            {
     String result = getFastLedInfo();
-    server.send(200, "application/json", result);
-  });
+    server.send(200, "application/json", result); });
 
-  server.on("/fieldOptions", HTTP_GET, []() {
+  server.on("/fieldOptions", HTTP_GET, []()
+            {
     String name = server.arg("name");
     String value = getFieldOptions(name, fields, fieldCount);
     StaticJsonDocument<512> root;
@@ -18,21 +19,10 @@ void setupWeb()
     root["options"] = value;
     String result;
     serializeJsonPretty(root, result);
-    server.send(200, "application/json", result);
-  });
+    server.send(200, "application/json", result); });
 
-  server.on("/fieldModifiers", HTTP_GET, []() {
-    String name = server.arg("name");
-    String value = getFieldModifiers(name, fields, fieldCount);
-    StaticJsonDocument<512> root;
-    root["name"] = name;
-    root["modifiers"] = value;
-    String result;
-    serializeJsonPretty(root, result);
-    server.send(200, "application/json", result);
-  });
-
-  server.on("/fieldValue", HTTP_GET, []() {
+  server.on("/fieldValue", HTTP_GET, []()
+            {
     String name = server.arg("name");
     String value = getFieldValue(name, fields, fieldCount);
     StaticJsonDocument<256> root;
@@ -40,10 +30,10 @@ void setupWeb()
     root["value"] = value;
     String result;
     serializeJsonPretty(root, result);
-    server.send(200, "application/json", result);
-  });
+    server.send(200, "application/json", result); });
 
-  server.on("/fieldValue", HTTP_POST, []() {
+  server.on("/fieldValue", HTTP_POST, []()
+            {
     String name = server.arg("name");
     String value = server.arg("value");
     try
@@ -63,14 +53,19 @@ void setupWeb()
       String error;
       serializeJsonPretty(root, error);
       server.send(400, "application/json", error);
-    }
-  });
+    } });
+
+  // server.on("/wifi", HTTP_POST, []()
+  //           {
+  //   String name = server.arg("ssid");
+  //   String pass = server.arg("password");
+  //   server.send(200, "text/plain", "OK"); });
 
   // server.on("/", HTTP_GET, handleRoot);
-  server.onNotFound([]() {
+  server.onNotFound([]()
+                    {
     if (!handleFileRead(server.uri()))
     {
       server.send(404, "text/plain", "Not Found");
-    }
-  });
+    } });
 }

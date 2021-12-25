@@ -71,7 +71,7 @@ void loadFieldsFromEEPROM(FieldList fields, uint8_t count)
       byteCount++;
     }
   }
-  if (!EEPROM.begin(count))
+  if (!EEPROM.begin(count + 2))
   {
     Serial.println("Failed to initialize EEPROM!");
     return;
@@ -172,19 +172,6 @@ String getFieldOptions(String name, FieldList fields, uint8_t count)
   if (field.getOptions)
   {
     return field.getOptions();
-  }
-  else
-  {
-    return String();
-  }
-}
-
-String getFieldModifiers(String name, FieldList fields, uint8_t count)
-{
-  Field field = getField(name, fields, count);
-  if (field.getModifiers)
-  {
-    return field.getModifiers();
   }
   else
   {
