@@ -11,7 +11,17 @@ const char WiFiAPPSK[] = "";
 
 void setupMDNS()
 {
-  if (MDNS.begin(mdns_name))
+  const char *name;
+  if (EEPROM.read(512) == 1)
+  {
+    int nameIndex = EEPROM.read(511);
+    name = readString(nameIndex);
+  }
+  else
+  {
+    name = mdns_name;
+  }
+  if (MDNS.begin(name))
   { // Start the mDNS responder for esp8266.local
     Serial.println("mDNS responder started");
   }
@@ -50,11 +60,25 @@ void setupWifi()
   }
   else
   {
+    const char *id;
+    const char *pass;
+    if (EEPROM.read(510) == 1)
+    {
+      int idIndex = EEPROM.read(508);
+      id = readString(idIndex);
+      int passIndex = EEPROM.read(509);
+      pass = readString(passIndex);
+    }
+    else
+    {
+      id = ssid;
+      pass = password;
+    }
     WiFi.mode(WIFI_STA);
     Serial.printf("Connecting to %s\n", ssid);
     if (String(WiFi.SSID()) != String(ssid))
     {
-      WiFi.begin(ssid, password);
+      WiFi.begin(id, pass);
       while (WiFi.status() != WL_CONNECTED)
       {
         delay(1000);

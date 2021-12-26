@@ -55,11 +55,27 @@ void setupWeb()
       server.send(400, "application/json", error);
     } });
 
-  // server.on("/wifi", HTTP_POST, []()
-  //           {
-  //   String name = server.arg("ssid");
-  //   String pass = server.arg("password");
-  //   server.send(200, "text/plain", "OK"); });
+  server.on("/wifi", HTTP_GET, []()
+            {   
+              char * r = readString(128);
+              Serial.println(r);
+server.send(200, "text/plain", r); });
+
+  server.on("/wifi", HTTP_POST, []()
+            {
+    String ssid = server.arg("ssid");
+    String password = server.arg("password");
+
+    int ssidLen = ssid.length() + 1;
+    int passLen = password.length() + 1;
+    char ssidArr[ssidLen];
+    char passArr[passLen];
+
+    ssid.toCharArray(ssidArr, ssidLen);
+    password.toCharArray(passArr, passLen);
+
+    writeWifiEEPROM(ssidArr, passArr);
+    server.send(200, "text/plain", "OK"); });
 
   // server.on("/", HTTP_GET, handleRoot);
   server.onNotFound([]()

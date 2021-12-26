@@ -52,6 +52,7 @@ int BRIGHTNESS_INCREMENT = 16;
 
 uint8_t currentPatternIndex = 0;
 uint8_t currentTemperatureIndex = 0;
+bool writeFields = false;
 
 const bool apMode = false;
 
@@ -70,6 +71,7 @@ uint8_t g_Speed = 20;
 CRGB solidColor = CRGB::Red;
 
 #include <secret.h>
+#include <eeprom_util.h>
 #include <wifi_utils.h>
 #include <file_manager.h>
 #include <pattern.h>
@@ -90,6 +92,7 @@ void IRAM_ATTR POWER_ISR()
     g_Power = !g_Power;
   }
   last_interrupt_time = interrupt_time;
+  writeFields = true;
 }
 
 void IRAM_ATTR PATTERN_ISR()
@@ -109,6 +112,7 @@ void IRAM_ATTR PATTERN_ISR()
     }
   }
   last_interrupt_time = interrupt_time;
+  writeFields = true;
 }
 
 void IRAM_ATTR BRIGHTNESS_INC_ISR()
@@ -130,6 +134,7 @@ void IRAM_ATTR BRIGHTNESS_INC_ISR()
     }
   }
   last_interrupt_time = interrupt_time;
+  writeFields = true;
 }
 
 void IRAM_ATTR BRIGHTNESS_DEC_ISR()
@@ -152,6 +157,7 @@ void IRAM_ATTR BRIGHTNESS_DEC_ISR()
     }
   }
   last_interrupt_time = interrupt_time;
+  writeFields = true;
 }
 
 void setup()
@@ -194,6 +200,11 @@ void setup()
   FastLED.setMaxPowerInVoltsAndMilliamps(5, MILLI_AMPS);
   FastLED.setBrightness(g_Brightness);
 
+  if (!EEPROM.begin(512))
+  {
+    Serial.println("Failed to initialize EEPROM!");
+    return;
+  }
   loadFieldsFromEEPROM(fields, fieldCount);
 }
 
@@ -208,6 +219,11 @@ void loop()
   else
   {
     patterns[currentPatternIndex].pattern();
+  }
+  if (writeFields)
+  {
+    writeFieldsToEEPROM(fields, fieldCount);
+    writeFields = false;
   }
   EVERY_N_MILLISECONDS(250)
   {
@@ -227,10 +243,6 @@ void loop()
     g_OLED.print("RGB: ");
     g_OLED.print(getSolidColor());
     g_OLED.sendBuffer();
-  }
-  EVERY_N_MILLISECONDS(1000)
-  {
-    writeFieldsToEEPROM(fields, fieldCount);
   }
   FastLED.show();
   FastLED.delay(1000 / FRAMES_PER_SECOND);
