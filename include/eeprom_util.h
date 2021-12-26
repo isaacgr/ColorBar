@@ -22,7 +22,6 @@ char *readString(uint8_t addr)
     len++;
   }
   data[len] = '\0';
-  Serial.println(data);
   return data;
 }
 
@@ -39,7 +38,6 @@ void writeWifiEEPROM(char ssid[], char pass[])
   EEPROM.write(509, index);
   EEPROM.write(510, 1);
   EEPROM.commit();
-  Serial.println(String(EEPROM.read(128)));
 }
 
 void writeDeviceNameEEPROM(char name[])

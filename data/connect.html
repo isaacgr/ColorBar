@@ -27,9 +27,9 @@
         <h3 class="title">Wifi Setup</h3>
         <form>
           <label class="sub-title" for="ssid">SSID</label>
-          <input id="ssid" type="text" />
+          <input id="ssid" type="text" maxlength="100" />
           <label class="sub-title" for="password">Password</label>
-          <input id="password" type="password" />
+          <input id="password" type="password" maxlength="100" />
         </form>
         <button id="wifi-button" class="btn btn-secondary btn-sm" type="submit">
           Save Wifi
@@ -38,7 +38,7 @@
       <div class="content-block">
         <h3 class="title">Device Name</h3>
         <form>
-          <input id="name" type="text" />
+          <input id="name" type="text" maxlength="100" />
         </form>
         <button id="name-button" class="btn btn-secondary btn-sm" type="submit">
           Save Name
@@ -52,26 +52,32 @@
       document
         .getElementById("wifi-button")
         .addEventListener("click", function () {
-          fetch(`http://192.168.4.1/wifi?ssid=${ssid}&pass=${pass}`)
+          fetch(`http://192.168.4.1/wifi?ssid=${ssid}&pass=${pass}`, {
+            method: "POST"
+          })
             .then((response) => {
               if (response.status === 200) {
                 alert("Wifi credentials set!");
               }
             })
             .catch((error) => {
+              console.log(error);
               alert("Unable to set wifi credentials");
             });
         });
       document
         .getElementById("name-button")
         .addEventListener("click", function () {
-          fetch(`http://192.168.4.1/deviceName?name=${deviceName}`)
+          fetch(`http://192.168.4.1/deviceName?name=${deviceName}`, {
+            method: "POST"
+          })
             .then((response) => {
               if (response.status === 200) {
                 alert("Device name set!");
               }
             })
             .catch((error) => {
+              console.log(error);
               alert("Unable to set device name");
             });
         });
