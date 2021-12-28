@@ -23,13 +23,14 @@
   </head>
   <body>
     <div class="container">
+      <h2 class="sub-title" id="error"></h2>
       <div class="content-block">
         <h3 class="title">Wifi Setup</h3>
         <form>
           <label class="sub-title" for="ssid">SSID</label>
-          <input id="ssid" type="text" maxlength="100" />
+          <input id="ssid" type="text" maxlength="50" />
           <label class="sub-title" for="password">Password</label>
-          <input id="password" type="password" maxlength="100" />
+          <input id="password" type="password" maxlength="50" />
         </form>
         <button id="wifi-button" class="btn btn-secondary btn-sm" type="submit">
           Save Wifi
@@ -38,7 +39,7 @@
       <div class="content-block">
         <h3 class="title">Device Name</h3>
         <form>
-          <input id="name" type="text" maxlength="100" />
+          <input id="deviceName" type="text" maxlength="50" />
         </form>
         <button id="name-button" class="btn btn-secondary btn-sm" type="submit">
           Save Name
@@ -46,13 +47,13 @@
       </div>
     </div>
     <script>
-      var ssid = document.getElementById("ssid");
-      var pass = document.getElementById("password");
-      var deviceName = document.getElementById("name");
       document
         .getElementById("wifi-button")
-        .addEventListener("click", function () {
-          fetch(`http://192.168.4.1/wifi?ssid=${ssid}&pass=${pass}`, {
+        .addEventListener("click", function (event) {
+          event.preventDefault();
+          var ssid = document.getElementById("ssid").value;
+          var pass = document.getElementById("password").value;
+          fetch(`${window.location.origin}/wifi?ssid=${ssid}&pass=${pass}`, {
             method: "POST"
           })
             .then((response) => {
@@ -61,26 +62,35 @@
               }
             })
             .catch((error) => {
-              console.log(error);
+              setError(error);
               alert("Unable to set wifi credentials");
             });
         });
       document
         .getElementById("name-button")
-        .addEventListener("click", function () {
-          fetch(`http://192.168.4.1/deviceName?name=${deviceName}`, {
-            method: "POST"
-          })
+        .addEventListener("click", function (event) {
+          event.preventDefault();
+          var deviceName = document.getElementById("deviceName").value;
+          console.log(deviceName);
+          fetch(
+            `${window.location.origin}/deviceName?deviceName=${deviceName}`,
+            {
+              method: "POST"
+            }
+          )
             .then((response) => {
               if (response.status === 200) {
                 alert("Device name set!");
               }
             })
             .catch((error) => {
-              console.log(error);
+              setError(error);
               alert("Unable to set device name");
             });
         });
+      function setError(error) {
+        document.getElementById("error").innerHTML = `Error: ${error.message}`;
+      }
     </script>
   </body>
 </html>

@@ -55,8 +55,9 @@ void setupWeb()
       server.send(400, "application/json", error);
     } });
 
-  server.on("/wifi", HTTP_POST, []()
-            {
+  server.on(
+      "/wifi", HTTP_POST, []()
+      {
     String ssid = server.arg("ssid");
     String password = server.arg("password");
 
@@ -67,20 +68,20 @@ void setupWeb()
 
     ssid.toCharArray(ssidArr, ssidLen);
     password.toCharArray(passArr, passLen);
-    
+
     try
     {
       writeWifiEEPROM(ssidArr, passArr);
+      server.send(200, "text/plain", "OK");
     }
-    catch (const std::length_error& e)
+    catch (const std::length_error &e)
     {
       StaticJsonDocument<32> root;
       root["error"] = e.what();
       String error;
       serializeJsonPretty(root, error);
       server.send(400, "application/json", error);
-    } 
-    server.send(200, "text/plain", "OK"); });
+    } });
 
   server.on("/deviceName", HTTP_POST, []()
             {
@@ -93,16 +94,16 @@ void setupWeb()
     try
     {
       writeDeviceNameEEPROM(nameArr);
+      server.send(200, "text/plain", "OK");
     }
-    catch (const std::length_error& e)
+    catch (const std::length_error &e)
     {
       StaticJsonDocument<32> root;
       root["error"] = e.what();
       String error;
       serializeJsonPretty(root, error);
       server.send(400, "application/json", error);
-    } 
-    server.send(200, "text/plain", "OK"); });
+    } });
 
   // server.on("/", HTTP_GET, handleRoot);
   server.onNotFound([]()

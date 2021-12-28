@@ -27,28 +27,28 @@ char *readString(uint8_t addr)
 
 void writeWifiEEPROM(char ssid[], char pass[])
 {
-  int index = 128;
-  if (strlen(ssid) > 100 || strlen(pass) > 100)
+  int index = 100;
+  if (strlen(ssid) > 50 || strlen(pass) > 50)
   {
-    throw std::length_error("Cannot exceed 100 characters");
+    throw std::length_error("Cannot exceed 50 characters");
   }
+  EEPROM.write(SSID_INDEX, index);
   index += writeString(index, ssid);
-  EEPROM.write(508, index);
+  EEPROM.write(PASS_INDEX, index);
   index += writeString(index, pass);
-  EEPROM.write(509, index);
-  EEPROM.write(510, 1);
+  EEPROM.write(WIFI_SET, 1);
   EEPROM.commit();
 }
 
 void writeDeviceNameEEPROM(char name[])
 {
-  if (strlen(name) > 100)
+  if (strlen(name) > 50)
   {
-    throw std::length_error("Cannot exceed 100 characters");
+    throw std::length_error("Cannot exceed 50 characters");
   }
-  int index = 384;
+  int index = 202;
+  EEPROM.write(MDNS_INDEX, index);
   index += writeString(index, name);
-  EEPROM.write(511, index);
-  EEPROM.write(512, 1);
+  EEPROM.write(MDNS_SET, 1);
   EEPROM.commit();
 }

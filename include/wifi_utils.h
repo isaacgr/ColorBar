@@ -7,15 +7,19 @@ String getHostName()
 }
 
 // AP mode password
-const char WiFiAPPSK[] = "";
+const char WiFiAPPSK[] = "ledwifi32";
 
 void setupMDNS()
 {
   const char *name;
-  if (EEPROM.read(512) == 1)
+  if (EEPROM.read(MDNS_SET) == 1)
   {
-    int nameIndex = EEPROM.read(511);
+    int nameIndex = EEPROM.read(MDNS_INDEX);
     name = readString(nameIndex);
+    if ((name != NULL) && (name[0] == '\0'))
+    {
+      name = mdns_name;
+    }
   }
   else
   {
@@ -23,7 +27,7 @@ void setupMDNS()
   }
   if (MDNS.begin(name))
   { // Start the mDNS responder for esp8266.local
-    Serial.println("mDNS responder started");
+    Serial.printf("mDNS responder started: %s\n", name);
   }
   else
   {
@@ -51,7 +55,7 @@ void setupWifi()
   // Print hostname.
   // Serial.println("Hostname: " + getHostName());
 
-  if (apMode)
+  if (apmode != 0)
   {
     WiFi.mode(WIFI_AP);
     WiFi.softAP(hostnameChar, WiFiAPPSK);
@@ -62,12 +66,12 @@ void setupWifi()
   {
     const char *id;
     const char *pass;
-    if (EEPROM.read(510) == 1)
+    if (EEPROM.read(WIFI_SET) == 1)
     {
-      int idIndex = EEPROM.read(508);
+      int idIndex = EEPROM.read(SSID_INDEX);
       id = readString(idIndex);
-      int passIndex = EEPROM.read(509);
-      pass = readString(passIndex);
+      int passwordIndex = EEPROM.read(PASS_INDEX);
+      pass = readString(passwordIndex);
     }
     else
     {
@@ -75,8 +79,8 @@ void setupWifi()
       pass = password;
     }
     WiFi.mode(WIFI_STA);
-    Serial.printf("Connecting to %s\n", ssid);
-    if (String(WiFi.SSID()) != String(ssid))
+    Serial.printf("Connecting to %s\n", id);
+    if (String(WiFi.SSID()) != String(id))
     {
       WiFi.begin(id, pass);
       while (WiFi.status() != WL_CONNECTED)

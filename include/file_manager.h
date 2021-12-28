@@ -29,11 +29,11 @@ String getContentType(String filename)
 
 bool handleFileRead(String path)
 { // send the right file to the client (if it exists)
-  if (path.endsWith("/") && !apMode)
+  if (path.endsWith("/") && !apmode)
   {
     path += "index.html"; // If a folder is requested, send the index file
   }
-  else if (path.endsWith("/") && apMode)
+  else if (path.endsWith("/") && apmode)
   {
     path += "connect.html";
   }

@@ -24,6 +24,7 @@
 #define PATTERN_BUTTON 15
 #define BRIGHTNESS_INC 18
 #define BRIGHTNESS_DEC 19
+#define RESET_BUTTON
 
 #define OLED_CLOCK 22
 #define OLED_DATA 21
@@ -49,12 +50,19 @@ uint8_t g_lineHeight = 0;
 uint8_t g_Brightness = 128;
 uint8_t g_Power = 1;
 int BRIGHTNESS_INCREMENT = 16;
+uint8_t apmode = 0;
 
 uint8_t currentPatternIndex = 0;
 uint8_t currentTemperatureIndex = 0;
 bool writeFields = false;
 
-const bool apMode = false;
+const uint8_t SSID_INDEX = 1;
+const uint8_t PASS_INDEX = 2;
+const uint8_t WIFI_SET = 3;
+const uint8_t MDNS_INDEX = 4;
+const uint8_t MDNS_SET = 5;
+const uint8_t AP_SET = 6;
+bool RESET = false;
 
 // modifiers for fire, water and pacifica effects
 uint8_t g_ColorTemperature = 0;
@@ -85,14 +93,50 @@ CRGB solidColor = CRGB::Red;
 void IRAM_ATTR POWER_ISR()
 {
   static unsigned long last_interrupt_time = 0;
+  static unsigned long rise_time;
+  static unsigned long fall_time;
+
   unsigned long interrupt_time = millis();
-  // If interrupts come faster than 200ms, assume it's a bounce and ignore
-  if (interrupt_time - last_interrupt_time > 200)
+
+  unsigned long toggle_ap_mode_time = 2500; // toggle ap mode if button held for 3s
+  unsigned long factory_reset_time = 9500;  // clear eeprom if button held for 10s
+
+  uint8_t pinState = digitalRead(POWER_BUTTON);
+  if (pinState == 1)
   {
-    g_Power = !g_Power;
+    rise_time = millis();
   }
-  last_interrupt_time = interrupt_time;
-  writeFields = true;
+  else
+  {
+    fall_time = millis();
+    // If interrupts come faster than 200ms, assume it's a bounce and ignore
+    if (interrupt_time - last_interrupt_time > 200)
+    {
+      unsigned long diff = fall_time - rise_time;
+      if (diff < toggle_ap_mode_time)
+      {
+        // assume user wants power off
+        g_Power = !g_Power;
+        writeFields = true;
+      }
+      else if (diff >= toggle_ap_mode_time && diff < factory_reset_time)
+      {
+        apmode = !apmode;
+        EEPROM.write(AP_SET, apmode);
+        RESET = true;
+      }
+      else if (diff >= factory_reset_time)
+      {
+        for (int i = 0; i < 512; i++)
+        {
+          EEPROM.write(i, 255);
+        }
+        EEPROM.write(AP_SET, 0);
+        RESET = true;
+      }
+    }
+    last_interrupt_time = interrupt_time;
+  }
 }
 
 void IRAM_ATTR PATTERN_ISR()
@@ -162,6 +206,11 @@ void IRAM_ATTR BRIGHTNESS_DEC_ISR()
 
 void setup()
 {
+  if (!EEPROM.begin(512))
+  {
+    Serial.println("Failed to initialize EEPROM!");
+    return;
+  }
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(LED_PIN_STRIP_1, OUTPUT);
   pinMode(LED_PIN_STRIP_2, OUTPUT);
@@ -170,7 +219,7 @@ void setup()
   pinMode(BRIGHTNESS_INC, INPUT);
   pinMode(BRIGHTNESS_DEC, INPUT);
 
-  attachInterrupt(POWER_BUTTON, POWER_ISR, RISING);
+  attachInterrupt(POWER_BUTTON, POWER_ISR, CHANGE);
   attachInterrupt(PATTERN_BUTTON, PATTERN_ISR, RISING);
   attachInterrupt(BRIGHTNESS_INC, BRIGHTNESS_INC_ISR, RISING);
   attachInterrupt(BRIGHTNESS_DEC, BRIGHTNESS_DEC_ISR, RISING);
@@ -179,6 +228,8 @@ void setup()
   while (!Serial)
   {
   }
+  apmode = EEPROM.read(AP_SET);
+
   setupMDNS();
   setupWifi();
   // SPIFFS.format(); // Prevents SPIFFS_ERR_NOT_A_FS
@@ -200,11 +251,6 @@ void setup()
   FastLED.setMaxPowerInVoltsAndMilliamps(5, MILLI_AMPS);
   FastLED.setBrightness(g_Brightness);
 
-  if (!EEPROM.begin(512))
-  {
-    Serial.println("Failed to initialize EEPROM!");
-    return;
-  }
   loadFieldsFromEEPROM(fields, fieldCount);
 }
 
@@ -225,6 +271,12 @@ void loop()
     writeFieldsToEEPROM(fields, fieldCount);
     writeFields = false;
   }
+  if (RESET)
+  {
+    RESET = !RESET;
+    EEPROM.commit();
+    ESP.restart();
+  }
   EVERY_N_MILLISECONDS(250)
   {
     g_OLED.clearBuffer();
@@ -242,6 +294,10 @@ void loop()
     g_OLED.setCursor(0, g_lineHeight * 6);
     g_OLED.print("RGB: ");
     g_OLED.print(getSolidColor());
+    if (apmode != 0)
+    {
+      g_OLED.printf("  AP Mode");
+    }
     g_OLED.sendBuffer();
   }
   FastLED.show();
