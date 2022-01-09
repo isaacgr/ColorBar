@@ -1,6 +1,7 @@
 #include <pacifica.h>
 #include <fire.h>
 #include <rainbow.h>
+#include <flicker.h>
 
 CRGBPalette16 IceColors_p = CRGBPalette16(CRGB::Black, CRGB::Blue, CRGB::Aqua, CRGB::White);
 
@@ -26,7 +27,6 @@ void showSolidColor()
 Fire effect from Daves garage
 ===============================
 */
-
 void DrawFireEffect()
 {
   FastLED.clear();
@@ -76,6 +76,8 @@ PatternAndNameList patterns = {
     {DrawWaterEffect, "water", ""},
     {DrawRainbowEffect, "rainbow", ""},
     {DrawFillRainbowEffect, "rainbow2", ""},
+    {DrawFlicker1, "flicker1", ""},
+    {DrawFlicker2, "flicker2", ""},
 };
 
 uint8_t patternCount = ARRAY_SIZE(patterns);
