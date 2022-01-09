@@ -105,7 +105,6 @@ void setupWeb()
       server.send(400, "application/json", error);
     } });
 
-  // server.on("/", HTTP_GET, handleRoot);
   server.onNotFound([]()
                     {
     if (!handleFileRead(server.uri()))

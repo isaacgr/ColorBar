@@ -1,7 +1,3 @@
-// transition all LEDs at once through the color wheel
-
-#define FASTLED_ALLOW_INTERRUPTS 0
-FASTLED_USING_NAMESPACE
 
 uint8_t initialHue = 0;
 const uint8_t deltaHue = 16;
@@ -14,7 +10,7 @@ void DrawRainbow()
 
 void DrawFillRainbow()
 {
-  // fill_solid(leds, NUM_LEDS, initialColor);
+  // transition all LEDs at once through the color wheel
   initialHue++;
   for (int i = 0; i < NUM_LEDS; i++)
   {

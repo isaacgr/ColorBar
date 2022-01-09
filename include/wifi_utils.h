@@ -8,6 +8,8 @@ String getHostName()
 
 // AP mode password
 const char WiFiAPPSK[] = "ledwifi32";
+const char *id;
+const char *pass;
 
 void setupMDNS()
 {
@@ -35,6 +37,27 @@ void setupMDNS()
   }
 }
 
+void WiFiStationConnected(WiFiEvent_t event, WiFiEventInfo_t info)
+{
+  Serial.println("Connected to AP successfully!");
+}
+
+void WiFiGotIP(WiFiEvent_t event, WiFiEventInfo_t info)
+{
+  Serial.println("WiFi connected");
+  Serial.println("IP address: ");
+  Serial.println(WiFi.localIP());
+}
+
+void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info)
+{
+  Serial.println("Disconnected from WiFi access point");
+  Serial.print("WiFi lost connection. Reason: ");
+  Serial.println(info.disconnected.reason);
+  Serial.println("Trying to Reconnect");
+  WiFi.begin(id, pass);
+}
+
 void setupWifi()
 {
   // Set Hostname.
@@ -52,9 +75,6 @@ void setupWifi()
 
   WiFi.setHostname(hostnameChar);
 
-  // Print hostname.
-  // Serial.println("Hostname: " + getHostName());
-
   if (apmode != 0)
   {
     WiFi.mode(WIFI_AP);
@@ -64,8 +84,6 @@ void setupWifi()
   }
   else
   {
-    const char *id;
-    const char *pass;
     if (EEPROM.read(WIFI_SET) == 1)
     {
       int idIndex = EEPROM.read(SSID_INDEX);
@@ -79,16 +97,14 @@ void setupWifi()
       pass = password;
     }
     WiFi.mode(WIFI_STA);
-    Serial.printf("Connecting to %s\n", id);
-    if (String(WiFi.SSID()) != String(id))
-    {
-      WiFi.begin(id, pass);
-      while (WiFi.status() != WL_CONNECTED)
-      {
-        delay(1000);
-        Serial.println("Connecting to WiFi...");
-      }
-      Serial.println("Connected to WiFi");
-    }
+    WiFi.disconnect(true);
+
+    delay(1000);
+
+    WiFi.onEvent(WiFiStationConnected, SYSTEM_EVENT_STA_CONNECTED);
+    WiFi.onEvent(WiFiGotIP, SYSTEM_EVENT_STA_GOT_IP);
+    WiFi.onEvent(WiFiStationDisconnected, SYSTEM_EVENT_STA_DISCONNECTED);
+    WiFi.begin(id, pass);
+    Serial.println("Wait for WiFi... ");
   }
 }
