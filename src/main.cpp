@@ -22,8 +22,8 @@
 
 #define POWER_BUTTON 4
 #define PATTERN_BUTTON 15
-#define BRIGHTNESS_INC 18
-#define BRIGHTNESS_DEC 19
+#define BRIGHTNESS_INC 19
+#define BRIGHTNESS_DEC 18
 #define RESET_BUTTON
 
 #define OLED_CLOCK 22
@@ -55,14 +55,15 @@ uint8_t apmode = 0;
 uint8_t currentPatternIndex = 0;
 uint8_t currentTemperatureIndex = 0;
 bool writeFields = false;
+bool RESET = false;
 
+// EEPROM addresses for state
 const uint8_t SSID_INDEX = 1;
 const uint8_t PASS_INDEX = 2;
 const uint8_t WIFI_SET = 3;
 const uint8_t MDNS_INDEX = 4;
 const uint8_t MDNS_SET = 5;
 const uint8_t AP_SET = 6;
-bool RESET = false;
 
 // modifiers for fire, water and pacifica effects
 uint8_t g_ColorTemperature = 0;
@@ -79,7 +80,7 @@ uint8_t g_Speed = 20;
 CRGB solidColor = CRGB::Red;
 
 #include <secret.h>
-#include <eeprom_util.h>
+#include <eeprom_utils.h>
 #include <wifi_utils.h>
 #include <file_manager.h>
 #include <pattern.h>
@@ -241,7 +242,7 @@ void setup()
 
   g_OLED.clear();
   g_OLED.begin();
-  g_OLED.setFont(u8g2_font_profont12_tf);
+  g_OLED.setFont(u8g2_font_profont11_tf);
   g_lineHeight = g_OLED.getFontAscent() - g_OLED.getFontDescent(); // decent is a negative number, so subtract from the total
 
   FastLED.addLeds<CHIPSET, LED_PIN_STRIP_1, COLOR_SEQUENCE>(leds, 0, LEDS_PER_STRIP).setCorrection(TypicalLEDStrip);
@@ -294,9 +295,21 @@ void loop()
     g_OLED.setCursor(0, g_lineHeight * 6);
     g_OLED.print("RGB: ");
     g_OLED.print(getSolidColor());
-    if (apmode != 0)
+    g_OLED.setCursor(0, g_lineHeight * 7);
+    if (apmode == 0)
     {
-      g_OLED.printf("  AP Mode");
+      if (WiFi.status() == WL_CONNECTED)
+      {
+        g_OLED.println(WiFi.localIP());
+      }
+      else
+      {
+        g_OLED.println("No wifi");
+      }
+    }
+    else
+    {
+      g_OLED.println("AP Mode");
     }
     g_OLED.sendBuffer();
   }
