@@ -16,7 +16,7 @@ CRGB parseColor(String value)
 
 void writeFieldsToEEPROM(FieldList fields, uint8_t count)
 {
-  uint8_t index = 0;
+  uint8_t index = 25;
 
   EEPROM.write(index, 0);
 
@@ -71,19 +71,14 @@ void loadFieldsFromEEPROM(FieldList fields, uint8_t count)
       byteCount++;
     }
   }
-  if (!EEPROM.begin(count))
-  {
-    Serial.println("Failed to initialize EEPROM!");
-    return;
-  }
 
-  if (EEPROM.read(0) == 255)
+  if (EEPROM.read(25) == 255)
   {
     Serial.println("First run, or EEPROM erased, skipping settings load!");
     return;
   }
 
-  uint8_t index = 0;
+  uint8_t index = 25;
 
   for (uint8_t i = 0; i < count; i++)
   {
@@ -172,19 +167,6 @@ String getFieldOptions(String name, FieldList fields, uint8_t count)
   if (field.getOptions)
   {
     return field.getOptions();
-  }
-  else
-  {
-    return String();
-  }
-}
-
-String getFieldModifiers(String name, FieldList fields, uint8_t count)
-{
-  Field field = getField(name, fields, count);
-  if (field.getModifiers)
-  {
-    return field.getModifiers();
   }
   else
   {

@@ -304,3 +304,16 @@ Table
 td.sub-title {
   padding-right: 1rem;
 }
+
+/*
+ ===============================
+  Form
+ ===============================
+ */
+
+form {
+  margin: 1rem auto;
+  display: flex;
+  flex-direction: column;
+  max-width: 10rem;
+}

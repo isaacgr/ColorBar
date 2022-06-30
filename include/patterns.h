@@ -1,6 +1,9 @@
-#include <temperatures.h>
 #include <pacifica.h>
 #include <fire.h>
+#include <rainbow.h>
+#include <flicker.h>
+
+CRGBPalette16 IceColors_p = CRGBPalette16(CRGB::Black, CRGB::Blue, CRGB::Aqua, CRGB::White);
 
 void showRGB(const CRGB &rgb)
 {
@@ -16,7 +19,6 @@ Solid color
 */
 void showSolidColor()
 {
-  FastLED.setTemperature(temperatures[0].temperature);
   fill_solid(leds, NUM_LEDS, solidColor);
 }
 
@@ -25,12 +27,9 @@ void showSolidColor()
 Fire effect from Daves garage
 ===============================
 */
-
 void DrawFireEffect()
 {
   FastLED.clear();
-  FastLED.setTemperature(temperatures[0].temperature);
-
   DrawFire(HeatColors_p);
 };
 
@@ -43,26 +42,42 @@ Water effect
 void DrawWaterEffect()
 {
   FastLED.clear();
-  FastLED.setTemperature(temperatures[0].temperature);
-
   DrawFire(IceColors_p);
 };
 
-typedef void (*Pattern)();
-typedef Pattern PatternList[];
-typedef struct
+/*
+===============================
+Rainbow effect
+===============================
+*/
+
+void DrawRainbowEffect()
 {
-  Pattern pattern;
-  String name;
-  String modifiers;
-} PatternAndName;
-typedef PatternAndName PatternAndNameList[];
+  FastLED.clear();
+  DrawRainbow();
+};
+
+/*
+===============================
+Fill Rainbow effect
+===============================
+*/
+
+void DrawFillRainbowEffect()
+{
+  FastLED.clear();
+  DrawFillRainbow();
+};
 
 PatternAndNameList patterns = {
-    {pacifica_loop, "pacifica", ""},
-    {DrawFireEffect, "fire", "sparking,cooling,sparks,sparkHeight,reversed,mirrored"},
-    {DrawWaterEffect, "water", "sparking,cooling,sparks,sparkHeight,reversed,mirrored"},
     {showSolidColor, "solidColor", ""},
+    {pacifica_loop, "pacifica", ""},
+    {DrawFireEffect, "fire", ""},
+    {DrawWaterEffect, "water", ""},
+    {DrawRainbowEffect, "rainbow", ""},
+    {DrawFillRainbowEffect, "rainbow2", ""},
+    {DrawFlicker1, "flicker1", ""},
+    {DrawFlicker2, "flicker2", ""},
 };
 
 uint8_t patternCount = ARRAY_SIZE(patterns);

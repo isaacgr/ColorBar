@@ -1,15 +1,3 @@
-bool toBoolean(String value)
-{
-  if (value == "0" || value == "false")
-  {
-    return false;
-  }
-  else
-  {
-    return true;
-  }
-}
-
 /*
 ===============================
 Power
@@ -58,11 +46,6 @@ uint8_t getPatternIndex()
   return currentPatternIndex;
 }
 
-String getPatternModifiers()
-{
-  return patterns[currentPatternIndex].modifiers;
-}
-
 void setPatternByValue(uint8_t value)
 {
   if (value >= patternCount)
@@ -109,118 +92,6 @@ String getPatterns()
 
 /*
 ===============================
-Palette
-===============================
-*/
-String getPalette()
-{
-  return paletteNames[currentPaletteIndex];
-}
-
-uint8_t getPaletteIndex()
-{
-  return currentPaletteIndex;
-}
-
-void setPaletteByValue(uint8_t value)
-{
-  if (value >= paletteCount)
-    value = paletteCount - 1;
-
-  currentPaletteIndex = value;
-}
-
-String setPalette(String paletteName)
-{
-  int i = 0;
-  while (i < paletteCount)
-  {
-    if (paletteNames[i] == paletteName)
-    {
-      break;
-    }
-    i++;
-  }
-  if (i < paletteCount)
-  {
-    setPaletteByValue(i);
-    return String(paletteNames[currentPaletteIndex]);
-  }
-  else
-  {
-    throw -1;
-  }
-}
-
-String getPalettes()
-{
-  String json = "";
-
-  for (uint8_t i = 0; i < paletteCount; i++)
-  {
-    json += paletteNames[i];
-    if (i < paletteCount - 1)
-      json += ",";
-  }
-  return json;
-}
-
-/*
-===============================
-Color Temperature
-===============================
-*/
-
-void setColorTemperature(uint8_t value)
-{
-  if (value >= colorCount)
-    value = colorCount - 1;
-
-  currentTemperatureIndex = value;
-}
-
-String setColorTemperature(String colorName)
-{
-  int i = 0;
-  while (i < colorCount)
-  {
-    if (temperatures[i].name == colorName)
-    {
-      break;
-    }
-    i++;
-  }
-  if (i < colorCount)
-  {
-    setColorTemperature(i);
-    return String(temperatures[currentTemperatureIndex].name);
-  }
-  else
-  {
-    throw -1;
-  }
-}
-
-String getColorTemperatures()
-{
-  String json = "";
-
-  for (uint8_t i = 0; i < colorCount; i++)
-  {
-    json += temperatures[i].name;
-    if (i < colorCount - 1)
-      json += ",";
-  }
-  return json;
-}
-
-String getColorTemperature()
-{
-  return temperatures[currentTemperatureIndex].name;
-}
-
-/*
-===============================
 Solid Color
 ===============================
 */
@@ -249,66 +120,6 @@ String setSolidColor(String value)
   return setSolidColor(color);
 }
 
-/*
-===============================
-Modifiers
-===============================
-*/
-
-String getCooling()
-{
-  return String(g_Cooling);
-}
-String getSparking()
-{
-  return String(g_Sparking);
-}
-String getReversed()
-{
-  return String(breversed);
-}
-String getMirrored()
-{
-  return String(bmirrored);
-}
-String getCycling()
-{
-  return String(g_Cycle);
-}
-String getSpeed()
-{
-  return String(g_Speed);
-}
-String setCooling(String value)
-{
-  g_Cooling = value.toInt();
-  return String(g_Cooling);
-}
-String setSparking(String value)
-{
-  g_Sparking = value.toInt();
-  return String(g_Sparking);
-}
-String setReversed(String value)
-{
-  breversed = toBoolean(value);
-  return String(breversed);
-}
-String setMirrored(String value)
-{
-  bmirrored = toBoolean(value);
-  return String(bmirrored);
-}
-String setCycling(String value)
-{
-  g_Cycle = toBoolean(value);
-  return String(g_Cycle);
-}
-String setSpeed(String value)
-{
-  g_Speed = value.toInt();
-  return String(g_Speed);
-}
 /*
 ===============================
 FastLED Info
@@ -353,19 +164,8 @@ String getFastLedInfo()
 FieldList fields = {
     {"power", "Power", NumberFieldType, false, 0, 1, getPower, NULL, setPower},
     {"brightness", "Brightness", NumberFieldType, false, 1, 255, getBrightness, NULL, setBrightness},
-
-    {"pattern", "Pattern", SelectFieldType, false, 0, patternCount, getPattern, getPatterns, setPattern, getPatternModifiers, setPatternByValue, getPatternIndex},
+    {"pattern", "Pattern", SelectFieldType, false, 0, patternCount, getPattern, getPatterns, setPattern, setPatternByValue, getPatternIndex},
     {"solidColor", "SolidColor", ColorFieldType, false, 0, 255, getSolidColor, NULL, setSolidColor},
-
-    // modifiers
-    {"palette", "Palette", SelectFieldType, true, 0, paletteCount, getPalette, getPalettes, setPalette, NULL, setPaletteByValue, getPaletteIndex},
-    // {"colorTemperature", "ColorTemperature", SelectFieldType, true, 0, colorCount, getColorTemperature, getColorTemperatures, setColorTemperature},
-    {"cooling", "Cooling", NumberFieldType, true, 0, 255, getCooling, NULL, setCooling},
-    {"sparking", "Sparking", NumberFieldType, true, 0, 255, getSparking, NULL, setSparking},
-    {"reversed", "Reversed", BooleanFieldType, true, 0, 1, getReversed, NULL, setReversed},
-    {"mirrored", "Mirrored", BooleanFieldType, true, 0, 1, getMirrored, NULL, setMirrored},
-    {"cycling", "Cycling", BooleanFieldType, true, 0, 1, getCycling, NULL, setCycling},
-    {"speed", "Speed", NumberFieldType, true, 0, 255, getSpeed, NULL, setSpeed},
 };
 
 uint8_t fieldCount = ARRAY_SIZE(fields);

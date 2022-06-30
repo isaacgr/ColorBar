@@ -1,5 +1,5 @@
 // used when hosting the site on the ESP8266
-var url = "http://tv.local";
+var url = "http://isaacdesk.local";
 var urlBase = "";
 
 // used when hosting the site somewhere other than the ESP8266 (handy for testing without waiting forever to upload to SPIFFS)
@@ -85,16 +85,16 @@ function handlePattern(field) {
     })
     .join("");
   document.getElementById("pattern-options").innerHTML = items;
-  getInvalidModifiers();
+  // getInvalidModifiers();
 }
 
 function updatePattern(pattern) {
   setField("pattern", pattern)
     .then((result) => {
-      document.getElementById(
-        "pattern-selection"
-      ).innerHTML = result.newValue.split(/(?=[A-Z])/).join(" ");
-      getInvalidModifiers();
+      document.getElementById("pattern-selection").innerHTML = result.newValue
+        .split(/(?=[A-Z])/)
+        .join(" ");
+      // getInvalidModifiers();
     })
     .catch((error) => setError(error));
 }
@@ -151,17 +151,17 @@ function handlePalette(field) {
 function updatePalette(palette) {
   setField("palette", palette)
     .then((result) => {
-      document.getElementById(
-        "palette-selection"
-      ).innerHTML = result.newValue.split(/(?=[A-Z])/).join(" ");
+      document.getElementById("palette-selection").innerHTML = result.newValue
+        .split(/(?=[A-Z])/)
+        .join(" ");
     })
     .catch((error) => setError(error));
 }
 
 function handleColorTemperature(field) {
-  document.getElementById(
-    "temperature-selection"
-  ).innerHTML = field.value.split(/(?=[A-Z])/).join(" ");
+  document.getElementById("temperature-selection").innerHTML = field.value
+    .split(/(?=[A-Z])/)
+    .join(" ");
   let items = field.options
     .split(",")
     .map((item) => {
@@ -176,9 +176,8 @@ function handleColorTemperature(field) {
 function updateColorTemperature(temperature) {
   setField("colorTemperature", temperature)
     .then((result) => {
-      document.getElementById(
-        "temperature-selection"
-      ).innerHTML = result.newValue.split(/(?=[A-Z])/).join(" ");
+      document.getElementById("temperature-selection").innerHTML =
+        result.newValue.split(/(?=[A-Z])/).join(" ");
     })
     .catch((error) => setError(error));
 }
@@ -232,16 +231,16 @@ function setField(name, value) {
     .then((json) => json);
 }
 
-function getFieldModifiers(name) {
-  return fetch(`${url}/fieldModifiers?name=${name}`)
-    .then((response) => {
-      return response.json();
-    })
-    .then((json) => json)
-    .catch((error) => {
-      setError(error);
-    });
-}
+// function getFieldModifiers(name) {
+//   return fetch(`${url}/fieldModifiers?name=${name}`)
+//     .then((response) => {
+//       return response.json();
+//     })
+//     .then((json) => json)
+//     .catch((error) => {
+//       setError(error);
+//     });
+// }
 
 function getLedInfo() {
   fetch(url + "/fastLedInfo")
@@ -272,10 +271,9 @@ function getAllInfo() {
 
 colorWheel.on("input:end", function (color, changes) {
   // when the color has changed, the callback gets passed the color object and an object providing which color channels (out of H, S, V) have changed.
-  setField(
-    "solidColor",
-    `${color.rgb.r},${color.rgb.g},${color.rgb.b}`
-  ).catch((error) => setError(error));
+  setField("solidColor", `${color.rgb.r},${color.rgb.g},${color.rgb.b}`).catch(
+    (error) => setError(error)
+  );
 });
 
 function setError(error) {

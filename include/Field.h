@@ -4,10 +4,8 @@ typedef void (*FieldValueSetter)(uint8_t);
 typedef uint8_t (*FieldIndexGetter)();
 
 const String NumberFieldType = "Number";
-const String BooleanFieldType = "Boolean";
 const String SelectFieldType = "Select";
 const String ColorFieldType = "Color";
-const String SectionFieldType = "Section";
 
 typedef struct
 {
@@ -21,7 +19,6 @@ public:
   FieldGetter getValue;
   FieldGetter getOptions;
   FieldSetter setValue;
-  FieldGetter getModifiers;
   FieldValueSetter setByValue;
   FieldIndexGetter getValueIndex;
 
