@@ -32,7 +32,7 @@ void DrawFire(CRGBPalette16 palette)
     if (random(255) < g_Sparking)
     {
       int y = size - 1 - random(g_SparkHeight);
-      heat[y] = heat[y] + random(160, 255); // This randomly rolls over sometimes of course, and that's essential to the effect
+      heat[y] = heat[y] + random(160, 180); // This randomly rolls over sometimes of course, and that's essential to the effect
     }
   }
 

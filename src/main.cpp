@@ -31,13 +31,14 @@
 #define OLED_RESET 16
 
 #define NUM_STRIPS 2
-#define LEDS_PER_STRIP 10
-#define NUM_LEDS NUM_STRIPS *LEDS_PER_STRIP
+#define LEDS_STRIP_1 74
+// #define LEDS_STRIP_2 15
+#define NUM_LEDS LEDS_STRIP_1
 #define LED_PIN_STRIP_1 5
 #define LED_PIN_STRIP_2 17
 #define COLOR_SEQUENCE GRB
 #define CHIPSET WS2812B
-#define MILLI_AMPS 1000 // IMPORTANT: set the max milli-Amps of your power supply (4A = 4000mA)
+#define MILLI_AMPS 4000 // IMPORTANT: set the max milli-Amps of your power supply (4A = 4000mA)
 
 #define FRAMES_PER_SECOND 120
 
@@ -45,7 +46,6 @@ CRGB leds[NUM_LEDS] = {0};
 
 U8G2_SSD1306_128X64_NONAME_F_HW_I2C g_OLED(U8G2_R0, OLED_RESET, OLED_CLOCK, OLED_DATA);
 WebServer server(80);
-
 uint8_t g_lineHeight = 0;
 uint8_t g_Brightness = 128;
 uint8_t g_Power = 1;
@@ -68,12 +68,12 @@ const uint8_t AP_SET = 6;
 // modifiers for fire, water and pacifica effects
 uint8_t g_ColorTemperature = 0;
 uint8_t g_ColorPalette = 0;
-uint8_t g_Sparking = 100;
-uint8_t g_Cooling = 20;
-uint8_t g_Sparks = 3;
-uint8_t g_SparkHeight = 4;
+uint8_t g_Sparking = 150;
+uint8_t g_Cooling = 6;
+uint8_t g_Sparks = 1;
+uint8_t g_SparkHeight = 1;
 bool breversed = false;
-bool bmirrored = false;
+bool bmirrored = true;
 bool g_Cycle = false;
 uint8_t g_Speed = 20;
 
@@ -245,8 +245,8 @@ void setup()
   g_OLED.setFont(u8g2_font_profont11_tf);
   g_lineHeight = g_OLED.getFontAscent() - g_OLED.getFontDescent(); // decent is a negative number, so subtract from the total
 
-  FastLED.addLeds<CHIPSET, LED_PIN_STRIP_1, COLOR_SEQUENCE>(leds, 0, LEDS_PER_STRIP).setCorrection(TypicalLEDStrip);
-  FastLED.addLeds<CHIPSET, LED_PIN_STRIP_2, COLOR_SEQUENCE>(leds, LEDS_PER_STRIP + 1, LEDS_PER_STRIP).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<CHIPSET, LED_PIN_STRIP_1, COLOR_SEQUENCE>(leds, 0, LEDS_STRIP_1).setCorrection(TypicalLEDStrip);
+  // FastLED.addLeds<CHIPSET, LED_PIN_STRIP_2, COLOR_SEQUENCE>(leds, LEDS_STRIP_1 + 1, LEDS_STRIP_2).setCorrection(TypicalLEDStrip);
 
   set_max_power_indicator_LED(LED_BUILTIN); // turn on the builtin led when the power throttling kicks in
   FastLED.setMaxPowerInVoltsAndMilliamps(5, MILLI_AMPS);
