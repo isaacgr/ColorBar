@@ -8,39 +8,12 @@
 #include <EEPROM.h>
 #include <ESPmDNS.h>
 #include <ArduinoJson.h>
+#include "defines.h"
+#include "secrets.h"
 
 #if defined(FASTLED_VERSION) && (FASTLED_VERSION < 3003000)
 #warning "Requires FastLED 3.3 or later; check github for latest code."
 #endif
-
-#define ARRAY_SIZE(A) (sizeof(A) / sizeof((A)[0]))
-#define TIMES_PER_SECOND(x) EVERY_N_MILLISECONDS(1000 / x)
-#define FASTLED_INTERNAL
-#define EEPROM_SIZE 12
-
-#define LED_BUILTIN 2
-
-#define POWER_BUTTON 4
-#define PATTERN_BUTTON 15
-#define BRIGHTNESS_INC 19
-#define BRIGHTNESS_DEC 18
-#define RESET_BUTTON
-
-#define OLED_CLOCK 22
-#define OLED_DATA 21
-#define OLED_RESET 16
-
-#define NUM_STRIPS 2
-#define LEDS_STRIP_1 74
-// #define LEDS_STRIP_2 15
-#define NUM_LEDS LEDS_STRIP_1
-#define LED_PIN_STRIP_1 5
-#define LED_PIN_STRIP_2 17
-#define COLOR_SEQUENCE GRB
-#define CHIPSET WS2812B
-#define MILLI_AMPS 4000 // IMPORTANT: set the max milli-Amps of your power supply (4A = 4000mA)
-
-#define FRAMES_PER_SECOND 120
 
 CRGB leds[NUM_LEDS] = {0};
 
@@ -57,14 +30,6 @@ uint8_t currentTemperatureIndex = 0;
 bool writeFields = false;
 bool RESET = false;
 
-// EEPROM addresses for state
-const uint8_t SSID_INDEX = 1;
-const uint8_t PASS_INDEX = 2;
-const uint8_t WIFI_SET = 3;
-const uint8_t MDNS_INDEX = 4;
-const uint8_t MDNS_SET = 5;
-const uint8_t AP_SET = 6;
-
 // modifiers for fire, water and pacifica effects
 uint8_t g_ColorTemperature = 0;
 uint8_t g_ColorPalette = 0;
@@ -79,7 +44,6 @@ uint8_t g_Speed = 20;
 
 CRGB solidColor = CRGB::Red;
 
-#include <secret.h>
 #include <eeprom_utils.h>
 #include <wifi_utils.h>
 #include <file_manager.h>
