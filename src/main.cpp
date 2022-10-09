@@ -1,24 +1,23 @@
 #include <Arduino.h>
+#include <EEPROM.h>
 #include <U8g2lib.h>
 #include <FastLED.h>
 #include <WiFi.h>
-#include <WebServer.h>
 #include <FS.h>
 #include <SPIFFS.h>
-#include <EEPROM.h>
-#include <ESPmDNS.h>
-#include <ArduinoJson.h>
+
 #include "defines.h"
 #include "secrets.h"
+#include "eeprom_utils.h"
+#include "routes.h"
 
 #if defined(FASTLED_VERSION) && (FASTLED_VERSION < 3003000)
 #warning "Requires FastLED 3.3 or later; check github for latest code."
 #endif
 
 CRGB leds[NUM_LEDS] = {0};
-
 U8G2_SSD1306_128X64_NONAME_F_HW_I2C g_OLED(U8G2_R0, OLED_RESET, OLED_CLOCK, OLED_DATA);
-WebServer server(80);
+
 uint8_t g_lineHeight = 0;
 uint8_t g_Brightness = 128;
 uint8_t g_Power = 1;
@@ -44,7 +43,6 @@ uint8_t g_Speed = 20;
 
 CRGB solidColor = CRGB::Red;
 
-#include <eeprom_utils.h>
 #include <wifi_utils.h>
 #include <file_manager.h>
 #include <pattern.h>
@@ -200,8 +198,6 @@ void setup()
   // SPIFFS.format(); // Prevents SPIFFS_ERR_NOT_A_FS
   SPIFFS.begin(); // Start the SPI Flash Files System
 
-  server.begin();
-  server.enableCORS();
   setupWeb();
 
   g_OLED.clear();

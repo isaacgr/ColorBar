@@ -35,7 +35,7 @@ DEFINITIONS
 
 // EEPROM addresses for state
 #define SSID_INDEX 1
-#define PASS_INDEX 2
+#define PASSWORD_INDEX 2
 #define WIFI_SET 3
 #define MDNS_INDEX 4
 #define MDNS_SET 5
