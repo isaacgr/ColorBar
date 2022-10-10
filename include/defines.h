@@ -32,6 +32,7 @@ DEFINITIONS
 #define MILLI_AMPS 4000 // IMPORTANT: set the max milli-Amps of your power supply (4A = 4000mA)
 
 #define FRAMES_PER_SECOND 120
+#define BRIGHTNESS_INCREMENT 16
 
 // EEPROM addresses for state
 #define SSID_INDEX 1

@@ -3,7 +3,7 @@
 #include <stdexcept>
 #include "eeprom_utils.h"
 #include "defines.h"
-#include "led.h"
+#include "leds.h"
 
 int writeString(uint8_t addr, char data[])
 {

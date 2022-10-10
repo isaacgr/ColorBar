@@ -1,5 +1,6 @@
 #include <FastLED.h>
-#include <pattern.h>
+#include "pattern.h"
+#include "leds.h"
 
 CRGBPalette16 IceColors_p = CRGBPalette16(CRGB::Black, CRGB::Blue, CRGB::Aqua, CRGB::White);
 

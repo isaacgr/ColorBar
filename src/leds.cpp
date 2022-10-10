@@ -1,5 +1,5 @@
 #include <FastLED.h>
-#include "led.h"
+#include "leds.h"
 
 CRGB parseColor(String value)
 {

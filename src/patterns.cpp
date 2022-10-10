@@ -1,3 +1,6 @@
+#include <FastLED.h>
+#include "pattern.h"
+#include "leds.h"
 
 uint8_t initialHue = 0;
 const uint8_t deltaHue = 16;
@@ -280,8 +283,6 @@ void DrawFlicker2()
   CRGB color = targetWhite;
   leds[pos] = color;
 }
-
-#include <ledgfx.h>
 
 // when diffusing the fire upwards, these control how much to blend in from teh cells below
 // you can tune these to control how quickly and smoothly the fire spreads

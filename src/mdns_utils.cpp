@@ -2,7 +2,7 @@
 #include <EEPROM.h>
 #include "defines.h"
 #include "eeprom_utils.h"
-#include "mdns.h"
+#include "mdns_utils.h"
 #include "secrets.h"
 
 void setupMDNS()

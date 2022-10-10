@@ -3,6 +3,7 @@
 #include <FastLED.h>
 #include "fields.h"
 #include "defines.h"
+#include "leds.h"
 
 /*
 ===============================
@@ -123,7 +124,7 @@ String setSolidColor(String value)
 {
   CRGB color = parseColor(value);
 
-  return setSolidColor(color);
+  return getRGBColor(color);
 }
 
 /*
