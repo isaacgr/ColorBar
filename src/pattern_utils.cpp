@@ -1,16 +1,14 @@
-#include <pacifica.h>
-#include <fire.h>
-#include <rainbow.h>
-#include <flicker.h>
+#include <FastLED.h>
+#include <pattern.h>
 
 CRGBPalette16 IceColors_p = CRGBPalette16(CRGB::Black, CRGB::Blue, CRGB::Aqua, CRGB::White);
 
-void showRGB(const CRGB &rgb)
-{
-  Serial.printf("R: %d\n", rgb.r);
-  Serial.printf("G: %d\n", rgb.g);
-  Serial.printf("B: %d\n", rgb.b);
-}
+// void showRGB(const CRGB &rgb)
+// {
+//   Serial.printf("R: %d\n", rgb.r);
+//   Serial.printf("G: %d\n", rgb.g);
+//   Serial.printf("B: %d\n", rgb.b);
+// }
 
 /*
 ===============================
@@ -68,16 +66,3 @@ void DrawFillRainbowEffect()
   FastLED.clear();
   DrawFillRainbow();
 };
-
-PatternAndNameList patterns = {
-    {showSolidColor, "solidColor", ""},
-    {pacifica_loop, "pacifica", ""},
-    {DrawFireEffect, "fire", ""},
-    {DrawWaterEffect, "water", ""},
-    {DrawRainbowEffect, "rainbow", ""},
-    {DrawFillRainbowEffect, "rainbow2", ""},
-    {DrawFlicker1, "flicker1", ""},
-    {DrawFlicker2, "flicker2", ""},
-};
-
-uint8_t patternCount = ARRAY_SIZE(patterns);

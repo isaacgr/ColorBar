@@ -2,7 +2,6 @@
 #include <EEPROM.h>
 #include <U8g2lib.h>
 #include <FastLED.h>
-#include <WiFi.h>
 #include <FS.h>
 #include <SPIFFS.h>
 
@@ -10,6 +9,7 @@
 #include "secrets.h"
 #include "eeprom_utils.h"
 #include "routes.h"
+#include "mdns.h"
 
 #if defined(FASTLED_VERSION) && (FASTLED_VERSION < 3003000)
 #warning "Requires FastLED 3.3 or later; check github for latest code."
@@ -194,9 +194,34 @@ void setup()
   apmode = EEPROM.read(AP_SET);
 
   setupMDNS();
-  setupWifi();
-  // SPIFFS.format(); // Prevents SPIFFS_ERR_NOT_A_FS
-  SPIFFS.begin(); // Start the SPI Flash Files System
+  setupWifi(hostname, apmode);
+  // Try to mount SPIFFS without formatting on failure
+  if (!SPIFFS.begin(false))
+  {
+    // If SPIFFS does not work, we wait for serial connection...
+    while (!Serial)
+      ;
+    delay(1000);
+
+    // Ask to format SPIFFS using serial interface
+    Serial.print("Mounting SPIFFS failed. Try formatting? (y/n): ");
+    while (!Serial.available())
+      ;
+    Serial.println();
+
+    // If the user did not accept to try formatting SPIFFS or formatting failed:
+    if (Serial.read() != 'y' || !SPIFFS.begin(true))
+    {
+      Serial.println("SPIFFS not available. Stop.");
+      while (true)
+        ;
+    }
+    else
+    {
+      SPIFFS.format();
+    }
+    Serial.println("SPIFFS has been formated.");
+  }
 
   setupWeb();
 
@@ -242,7 +267,7 @@ void loop()
   {
     g_OLED.clearBuffer();
     g_OLED.setCursor(0, g_lineHeight);
-    g_OLED.print(getHostName());
+    g_OLED.print(hostname);
     g_OLED.setCursor(0, g_lineHeight * 2);
     g_OLED.printf("FPS: %u", FastLED.getFPS());
     g_OLED.setCursor(0, g_lineHeight * 3);

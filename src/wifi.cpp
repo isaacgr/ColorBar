@@ -37,7 +37,7 @@ void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info)
   WiFi.begin(ssid, password);
 }
 
-void setupWifi(String hostname, int apMode, int enterpriseModePin)
+void setupWifi(String hostname, int apMode)
 {
   // Set Hostname.
   uint64_t chipid = ESP.getEfuseMac();

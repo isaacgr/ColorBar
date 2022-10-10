@@ -1,6 +1,9 @@
 #include <ArduinoJson.h>
 #include "routes.h"
 #include "eeprom_utils.h"
+#include "field_utils.h"
+#include "fields.h"
+#include "file_manager.h"
 
 void setupWeb()
 {
@@ -8,7 +11,7 @@ void setupWeb()
   server.enableCORS();
   server.on("/all", HTTP_GET, []()
             {
-    String json = getAllFields(fields, fieldCount);
+    String json = getAllFields();
     server.send(200, "application/json", json); });
 
   server.on("/fastLedInfo", HTTP_GET, []()
@@ -19,7 +22,7 @@ void setupWeb()
   server.on("/fieldOptions", HTTP_GET, []()
             {
     String name = server.arg("name");
-    String value = getFieldOptions(name, fields, fieldCount);
+    String value = getFieldOptions(name);
     StaticJsonDocument<512> root;
     root["name"] = name;
     root["options"] = value;
@@ -30,7 +33,7 @@ void setupWeb()
   server.on("/fieldValue", HTTP_GET, []()
             {
     String name = server.arg("name");
-    String value = getFieldValue(name, fields, fieldCount);
+    String value = getFieldValue(name);
     StaticJsonDocument<256> root;
     root["name"] = name;
     root["value"] = value;
@@ -44,7 +47,7 @@ void setupWeb()
     String value = server.arg("value");
     try
     {
-      String newValue = setFieldValue(name, value, fields, fieldCount);
+      String newValue = setFieldValue(name, value);
       StaticJsonDocument<256> root;
       root["name"] = name;
       root["newValue"] = newValue;
