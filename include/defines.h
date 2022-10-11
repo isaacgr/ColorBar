@@ -42,4 +42,8 @@ DEFINITIONS
 #define MDNS_SET 5
 #define AP_SET 6
 
+extern uint8_t g_Brightness;
+extern uint8_t g_Power;
+extern uint8_t currentPatternIndex;
+
 #endif

@@ -9,5 +9,7 @@ String getFieldValue(String name);
 String setFieldValue(String name, String value);
 String getFieldOptions(String name);
 String getAllFields();
+void writeFieldsToEEPROM();
+void loadFieldsFromEEPROM();
 
 #endif

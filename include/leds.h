@@ -5,13 +5,8 @@
 #include <FastLED.h>
 #include "defines.h"
 
-uint8_t g_lineHeight = 0;
-uint8_t g_Brightness = 128;
-uint8_t g_Power = 1;
-uint8_t currentPatternIndex = 0;
-
-CRGB leds[NUM_LEDS] = {0};
-CRGB solidColor = CRGB::Red;
+extern CRGB leds[NUM_LEDS];
+extern CRGB solidColor;
 CRGB parseColor(String value);
 
 #endif

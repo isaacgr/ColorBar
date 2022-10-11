@@ -26,28 +26,18 @@ void DrawRainbow();
 void DrawFillRainbow();
 
 // modifiers for fire, water and pacifica effects
-uint8_t g_ColorTemperature = 0;
-uint8_t g_ColorPalette = 0;
-uint8_t g_Sparking = 150;
-uint8_t g_Cooling = 6;
-uint8_t g_Sparks = 1;
-uint8_t g_SparkHeight = 1;
-bool breversed = false;
-bool bmirrored = true;
-bool g_Cycle = false;
-uint8_t g_Speed = 20;
+extern uint8_t g_ColorTemperature;
+extern uint8_t g_ColorPalette;
+extern uint8_t g_Sparking;
+extern uint8_t g_Cooling;
+extern uint8_t g_Sparks;
+extern uint8_t g_SparkHeight;
+extern bool breversed;
+extern bool bmirrored;
+extern bool g_Cycle;
+extern uint8_t g_Speed;
 
-PatternAndNameList patterns = {
-    {showSolidColor, "solidColor", ""},
-    {pacifica_loop, "pacifica", ""},
-    {DrawFireEffect, "fire", ""},
-    {DrawWaterEffect, "water", ""},
-    {DrawRainbowEffect, "rainbow", ""},
-    {DrawFillRainbowEffect, "rainbow2", ""},
-    {DrawFlicker1, "flicker1", ""},
-    {DrawFlicker2, "flicker2", ""},
-};
-
-uint8_t patternCount = ARRAY_SIZE(patterns);
+extern PatternAndNameList patterns;
+extern uint8_t patternCount;
 
 #endif

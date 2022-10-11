@@ -3,7 +3,6 @@
 
 #include <FastLED.h>
 #include "defines.h"
-#include "pattern.h"
 
 typedef String (*FieldSetter)(String);
 typedef String (*FieldGetter)();
@@ -48,13 +47,7 @@ String getRGBColor(CRGB color);
 String setSolidColor(String value);
 String getFastLedInfo();
 
-FieldList fields = {
-    {"power", "Power", NumberFieldType, false, 0, 1, getPower, NULL, setPower},
-    {"brightness", "Brightness", NumberFieldType, false, 1, 255, getBrightness, NULL, setBrightness},
-    {"pattern", "Pattern", SelectFieldType, false, 0, patternCount, getPattern, getPatterns, setPattern, setPatternByValue, getPatternIndex},
-    {"solidColor", "SolidColor", ColorFieldType, false, 0, 255, getSolidColor, NULL, setSolidColor},
-};
-
-uint8_t fieldCount = ARRAY_SIZE(fields);
+extern FieldList fields;
+extern uint8_t fieldCount;
 
 #endif

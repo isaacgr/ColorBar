@@ -1,8 +1,10 @@
 #include <Arduino.h>
 #include <ArduinoJson.h>
+#include <EEPROM.h>
 #include "fields.h"
 #include "field_utils.h"
 #include "eeprom_utils.h"
+#include "leds.h"
 
 Field getField(String name)
 {
@@ -52,7 +54,7 @@ String setFieldValue(String name, String value)
     }
   }
 
-  writeFieldsToEEPROM(fields, fieldCount);
+  writeFieldsToEEPROM();
 
   return result;
 }
@@ -101,4 +103,98 @@ String getAllFields()
   String result;
   serializeJsonPretty(json, result);
   return result;
+}
+
+void writeFieldsToEEPROM()
+{
+  uint8_t index = 25;
+
+  EEPROM.write(index, 0);
+
+  for (uint8_t i = 0; i < fieldCount; i++)
+  {
+    Field field = fields[i];
+    if (!field.getValue && !field.setValue)
+      continue;
+
+    if (field.type == ColorFieldType)
+    {
+      String value = field.getValue();
+      CRGB color = parseColor(value);
+      EEPROM.write(index++, color.r);
+      EEPROM.write(index++, color.g);
+      EEPROM.write(index++, color.b);
+    }
+    else
+    {
+      if (field.type == SelectFieldType)
+      {
+        byte v = field.getValueIndex();
+        EEPROM.write(index++, v);
+      }
+      else
+      {
+        String value = field.getValue();
+        byte v = value.toInt();
+        EEPROM.write(index++, v);
+      }
+    }
+  }
+
+  EEPROM.commit();
+}
+
+void loadFieldsFromEEPROM()
+{
+  uint8_t byteCount = 1;
+  for (uint8_t i = 0; i < fieldCount; i++)
+  {
+    Field field = fields[i];
+    if (!field.setValue)
+      continue;
+
+    if (field.type == ColorFieldType)
+    {
+      byteCount += 3;
+    }
+    else
+    {
+      byteCount++;
+    }
+  }
+
+  if (EEPROM.read(25) == 255)
+  {
+    Serial.println("First run, or EEPROM erased, skipping settings load!");
+    return;
+  }
+
+  uint8_t index = 25;
+
+  for (uint8_t i = 0; i < fieldCount; i++)
+  {
+    Field field = fields[i];
+    if (!field.setValue)
+      continue;
+
+    if (field.type == ColorFieldType)
+    {
+      String r = String(EEPROM.read(index++));
+      String g = String(EEPROM.read(index++));
+      String b = String(EEPROM.read(index++));
+      field.setValue(r + "," + g + "," + b);
+    }
+    else
+    {
+      byte v = EEPROM.read(index++);
+      if (field.type == SelectFieldType)
+      {
+        field.setByValue(uint8_t(v));
+      }
+      else
+      {
+        field.setValue(String(v));
+      }
+    }
+  }
 }

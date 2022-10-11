@@ -4,6 +4,7 @@
 #include "fields.h"
 #include "defines.h"
 #include "leds.h"
+#include "pattern.h"
 
 /*
 ===============================

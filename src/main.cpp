@@ -12,6 +12,8 @@
 #include "mdns_utils.h"
 #include "wifi_utils.h"
 #include "leds.h"
+#include "field_utils.h"
+#include "pattern.h"
 
 #if defined(FASTLED_VERSION) && (FASTLED_VERSION < 3003000)
 #warning "Requires FastLED 3.3 or later; check github for latest code."
@@ -22,6 +24,48 @@ U8G2_SSD1306_128X64_NONAME_F_HW_I2C g_OLED(U8G2_R0, OLED_RESET, OLED_CLOCK, OLED
 uint8_t apmode = 0;
 bool writeFields = false;
 bool RESET = false;
+uint8_t g_lineHeight = 0;
+
+uint8_t g_Brightness = 128;
+uint8_t g_Power = 1;
+uint8_t currentPatternIndex = 0;
+
+CRGB leds[NUM_LEDS] = {0};
+CRGB solidColor = CRGB::Red;
+
+// modifiers for fire, water and pacifica effects
+uint8_t g_ColorTemperature = 0;
+uint8_t g_ColorPalette = 0;
+uint8_t g_Sparking = 150;
+uint8_t g_Cooling = 6;
+uint8_t g_Sparks = 1;
+uint8_t g_SparkHeight = 1;
+bool breversed = false;
+bool bmirrored = true;
+bool g_Cycle = false;
+uint8_t g_Speed = 20;
+
+PatternAndNameList patterns = {
+    {showSolidColor, "solidColor", ""},
+    {pacifica_loop, "pacifica", ""},
+    {DrawFireEffect, "fire", ""},
+    {DrawWaterEffect, "water", ""},
+    {DrawRainbowEffect, "rainbow", ""},
+    {DrawFillRainbowEffect, "rainbow2", ""},
+    {DrawFlicker1, "flicker1", ""},
+    {DrawFlicker2, "flicker2", ""},
+};
+
+uint8_t patternCount = ARRAY_SIZE(patterns);
+
+FieldList fields = {
+    {"power", "Power", NumberFieldType, false, 0, 1, getPower, NULL, setPower},
+    {"brightness", "Brightness", NumberFieldType, false, 1, 255, getBrightness, NULL, setBrightness},
+    {"pattern", "Pattern", SelectFieldType, false, 0, patternCount, getPattern, getPatterns, setPattern, setPatternByValue, getPatternIndex},
+    {"solidColor", "SolidColor", ColorFieldType, false, 0, 255, getSolidColor, NULL, setSolidColor},
+};
+
+uint8_t fieldCount = ARRAY_SIZE(fields);
 
 void IRAM_ATTR POWER_ISR()
 {
@@ -207,7 +251,7 @@ void setup()
   FastLED.setMaxPowerInVoltsAndMilliamps(5, MILLI_AMPS);
   FastLED.setBrightness(g_Brightness);
 
-  loadFieldsFromEEPROM(fields, fieldCount);
+  loadFieldsFromEEPROM();
 }
 
 void loop()
@@ -224,7 +268,7 @@ void loop()
   }
   if (writeFields)
   {
-    writeFieldsToEEPROM(fields, fieldCount);
+    writeFieldsToEEPROM();
     writeFields = false;
   }
   if (RESET)
