@@ -4,12 +4,9 @@
 #include <FastLED.h>
 #include <FS.h>
 #include <SPIFFS.h>
-
 #include "defines.h"
-#include "secrets.h"
 #include "eeprom_utils.h"
 #include "routes.h"
-#include "mdns_utils.h"
 #include "wifi_utils.h"
 #include "leds.h"
 #include "field_utils.h"
@@ -18,6 +15,8 @@
 #if defined(FASTLED_VERSION) && (FASTLED_VERSION < 3003000)
 #warning "Requires FastLED 3.3 or later; check github for latest code."
 #endif
+
+WebServer server(80);
 
 U8G2_SSD1306_128X64_NONAME_F_HW_I2C g_OLED(U8G2_R0, OLED_RESET, OLED_CLOCK, OLED_DATA);
 
@@ -208,7 +207,7 @@ void setup()
   apmode = EEPROM.read(AP_SET);
 
   setupMDNS();
-  setupWifi(hostname, apmode);
+  setupWifi(apmode);
   // Try to mount SPIFFS without formatting on failure
   if (!SPIFFS.begin(false))
   {
@@ -281,7 +280,7 @@ void loop()
   {
     g_OLED.clearBuffer();
     g_OLED.setCursor(0, g_lineHeight);
-    g_OLED.print(hostname);
+    g_OLED.print(getHostname());
     g_OLED.setCursor(0, g_lineHeight * 2);
     g_OLED.printf("FPS: %u", FastLED.getFPS());
     g_OLED.setCursor(0, g_lineHeight * 3);

@@ -7,6 +7,8 @@
 char *toCharArray(String str);
 void WiFiStationConnected(WiFiEvent_t event, WiFiEventInfo_t info);
 void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info);
-void setupWifi(String hostname, int apMode);
+void setupWifi(int apMode);
+String getHostname();
+void setupMDNS();
 
 #endif

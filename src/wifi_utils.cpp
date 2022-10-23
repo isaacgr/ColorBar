@@ -1,8 +1,12 @@
+#include <ESPmDNS.h>
 #include <EEPROM.h>
 #include <WiFi.h>
+#include "eeprom_utils.h"
 #include "wifi_utils.h"
 #include "defines.h"
 #include "secrets.h"
+
+String hostname = "ESP-";
 
 char *toCharArray(String str)
 {
@@ -14,6 +18,11 @@ char *toCharArray(String str)
   }
 
   return charArray;
+}
+
+String getHostname()
+{
+  return hostname;
 }
 
 void WiFiStationConnected(WiFiEvent_t event, WiFiEventInfo_t info)
@@ -37,7 +46,7 @@ void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info)
   WiFi.begin(ssid, password);
 }
 
-void setupWifi(String hostname, int apMode)
+void setupWifi(int apMode)
 {
   // Set Hostname.
   uint64_t chipid = ESP.getEfuseMac();
@@ -79,5 +88,31 @@ void setupWifi(String hostname, int apMode)
       strcpy(password, toCharArray(EEPROM.readString(passwordIndex)));
     }
     WiFi.begin(ssid, password);
+  }
+}
+
+void setupMDNS()
+{
+  const char *name;
+  if (EEPROM.read(MDNS_SET) == 1)
+  {
+    int nameIndex = EEPROM.read(MDNS_INDEX);
+    name = readString(nameIndex);
+    if ((name != NULL) && (name[0] == '\0'))
+    {
+      name = mdns_name;
+    }
+  }
+  else
+  {
+    name = mdns_name;
+  }
+  if (MDNS.begin(name))
+  { // Start the mDNS responder for esp8266.local
+    Serial.printf("mDNS responder started: %s\n", name);
+  }
+  else
+  {
+    Serial.println("Error setting up MDNS responder!");
   }
 }
