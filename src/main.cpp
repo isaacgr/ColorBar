@@ -1,69 +1,36 @@
 #include <Arduino.h>
+#include <EEPROM.h>
 #include <U8g2lib.h>
 #include <FastLED.h>
-#include <WiFi.h>
-#include <WebServer.h>
 #include <FS.h>
 #include <SPIFFS.h>
-#include <EEPROM.h>
-#include <ESPmDNS.h>
-#include <ArduinoJson.h>
+#include "defines.h"
+#include "eeprom_utils.h"
+#include "routes.h"
+#include "wifi_utils.h"
+#include "leds.h"
+#include "field_utils.h"
+#include "pattern.h"
 
 #if defined(FASTLED_VERSION) && (FASTLED_VERSION < 3003000)
 #warning "Requires FastLED 3.3 or later; check github for latest code."
 #endif
 
-#define ARRAY_SIZE(A) (sizeof(A) / sizeof((A)[0]))
-#define TIMES_PER_SECOND(x) EVERY_N_MILLISECONDS(1000 / x)
-#define FASTLED_INTERNAL
-#define EEPROM_SIZE 12
-
-#define LED_BUILTIN 2
-
-#define POWER_BUTTON 4
-#define PATTERN_BUTTON 15
-#define BRIGHTNESS_INC 19
-#define BRIGHTNESS_DEC 18
-#define RESET_BUTTON
-
-#define OLED_CLOCK 22
-#define OLED_DATA 21
-#define OLED_RESET 16
-
-#define NUM_STRIPS 2
-#define LEDS_STRIP_1 74
-// #define LEDS_STRIP_2 15
-#define NUM_LEDS LEDS_STRIP_1
-#define LED_PIN_STRIP_1 5
-#define LED_PIN_STRIP_2 17
-#define COLOR_SEQUENCE GRB
-#define CHIPSET WS2812B
-#define MILLI_AMPS 4000 // IMPORTANT: set the max milli-Amps of your power supply (4A = 4000mA)
-
-#define FRAMES_PER_SECOND 120
-
-CRGB leds[NUM_LEDS] = {0};
+WebServer server(80);
 
 U8G2_SSD1306_128X64_NONAME_F_HW_I2C g_OLED(U8G2_R0, OLED_RESET, OLED_CLOCK, OLED_DATA);
-WebServer server(80);
-uint8_t g_lineHeight = 0;
-uint8_t g_Brightness = 128;
-uint8_t g_Power = 1;
-int BRIGHTNESS_INCREMENT = 16;
-uint8_t apmode = 0;
 
-uint8_t currentPatternIndex = 0;
-uint8_t currentTemperatureIndex = 0;
+uint8_t apmode = 0;
 bool writeFields = false;
 bool RESET = false;
+uint8_t g_lineHeight = 0;
 
-// EEPROM addresses for state
-const uint8_t SSID_INDEX = 1;
-const uint8_t PASS_INDEX = 2;
-const uint8_t WIFI_SET = 3;
-const uint8_t MDNS_INDEX = 4;
-const uint8_t MDNS_SET = 5;
-const uint8_t AP_SET = 6;
+uint8_t g_Brightness = 128;
+uint8_t g_Power = 1;
+uint8_t currentPatternIndex = 0;
+
+CRGB leds[NUM_LEDS] = {0};
+CRGB solidColor = CRGB::Red;
 
 // modifiers for fire, water and pacifica effects
 uint8_t g_ColorTemperature = 0;
@@ -77,19 +44,27 @@ bool bmirrored = true;
 bool g_Cycle = false;
 uint8_t g_Speed = 20;
 
-CRGB solidColor = CRGB::Red;
+PatternAndNameList patterns = {
+    {showSolidColor, "solidColor", ""},
+    {pacifica_loop, "pacifica", ""},
+    {DrawFireEffect, "fire", ""},
+    {DrawWaterEffect, "water", ""},
+    {DrawRainbowEffect, "rainbow", ""},
+    {DrawFillRainbowEffect, "rainbow2", ""},
+    {DrawFlicker1, "flicker1", ""},
+    {DrawFlicker2, "flicker2", ""},
+};
 
-#include <secret.h>
-#include <eeprom_utils.h>
-#include <wifi_utils.h>
-#include <file_manager.h>
-#include <pattern.h>
-#include <patterns.h>
+uint8_t patternCount = ARRAY_SIZE(patterns);
 
-#include <field.h>
-#include <field_utils.h>
-#include <fields.h>
-#include <routes.h>
+FieldList fields = {
+    {"power", "Power", NumberFieldType, false, 0, 1, getPower, NULL, setPower},
+    {"brightness", "Brightness", NumberFieldType, false, 1, 255, getBrightness, NULL, setBrightness},
+    {"pattern", "Pattern", SelectFieldType, false, 0, patternCount, getPattern, getPatterns, setPattern, setPatternByValue, getPatternIndex},
+    {"solidColor", "SolidColor", ColorFieldType, false, 0, 255, getSolidColor, NULL, setSolidColor},
+};
+
+uint8_t fieldCount = ARRAY_SIZE(fields);
 
 void IRAM_ATTR POWER_ISR()
 {
@@ -232,12 +207,35 @@ void setup()
   apmode = EEPROM.read(AP_SET);
 
   setupMDNS();
-  setupWifi();
-  // SPIFFS.format(); // Prevents SPIFFS_ERR_NOT_A_FS
-  SPIFFS.begin(); // Start the SPI Flash Files System
+  setupWifi(apmode);
+  // Try to mount SPIFFS without formatting on failure
+  if (!SPIFFS.begin(false))
+  {
+    // If SPIFFS does not work, we wait for serial connection...
+    while (!Serial)
+      ;
+    delay(1000);
 
-  server.begin();
-  server.enableCORS();
+    // Ask to format SPIFFS using serial interface
+    Serial.print("Mounting SPIFFS failed. Try formatting? (y/n): ");
+    while (!Serial.available())
+      ;
+    Serial.println();
+
+    // If the user did not accept to try formatting SPIFFS or formatting failed:
+    if (Serial.read() != 'y' || !SPIFFS.begin(true))
+    {
+      Serial.println("SPIFFS not available. Stop.");
+      while (true)
+        ;
+    }
+    else
+    {
+      SPIFFS.format();
+    }
+    Serial.println("SPIFFS has been formated.");
+  }
+
   setupWeb();
 
   g_OLED.clear();
@@ -252,7 +250,7 @@ void setup()
   FastLED.setMaxPowerInVoltsAndMilliamps(5, MILLI_AMPS);
   FastLED.setBrightness(g_Brightness);
 
-  loadFieldsFromEEPROM(fields, fieldCount);
+  loadFieldsFromEEPROM();
 }
 
 void loop()
@@ -269,7 +267,7 @@ void loop()
   }
   if (writeFields)
   {
-    writeFieldsToEEPROM(fields, fieldCount);
+    writeFieldsToEEPROM();
     writeFields = false;
   }
   if (RESET)
@@ -282,7 +280,7 @@ void loop()
   {
     g_OLED.clearBuffer();
     g_OLED.setCursor(0, g_lineHeight);
-    g_OLED.print(getHostName());
+    g_OLED.print(getHostname());
     g_OLED.setCursor(0, g_lineHeight * 2);
     g_OLED.printf("FPS: %u", FastLED.getFPS());
     g_OLED.setCursor(0, g_lineHeight * 3);
