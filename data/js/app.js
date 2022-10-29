@@ -1,10 +1,6 @@
 // used when hosting the site on the ESP8266
-var url = "http://isaacdesk.local";
+var url = `http://${window.location.host}`;
 var urlBase = "";
-
-// used when hosting the site somewhere other than the ESP8266 (handy for testing without waiting forever to upload to SPIFFS)
-// var address = "192.168.86.55";
-// var urlBase = "http://" + address + "/";
 
 var currentPowerState;
 var currentBrightness;
@@ -76,6 +72,11 @@ function handlePattern(field) {
   document.getElementById("pattern-selection").innerHTML = field.value
     .split(/(?=[A-Z])/)
     .join(" ");
+  if (field.value !== "solidColor") {
+    document.getElementById("colorWheelDemo").style.visibility = "hidden";
+  } else {
+    document.getElementById("colorWheelDemo").style.visibility = "visible";
+  }
   let items = field.options
     .split(",")
     .map((item) => {
@@ -89,6 +90,11 @@ function handlePattern(field) {
 }
 
 function updatePattern(pattern) {
+  if (pattern !== "solidColor") {
+    document.getElementById("colorWheelDemo").style.visibility = "hidden";
+  } else {
+    document.getElementById("colorWheelDemo").style.visibility = "visible";
+  }
   setField("pattern", pattern)
     .then((result) => {
       document.getElementById("pattern-selection").innerHTML = result.newValue
@@ -231,16 +237,16 @@ function setField(name, value) {
     .then((json) => json);
 }
 
-// function getFieldModifiers(name) {
-//   return fetch(`${url}/fieldModifiers?name=${name}`)
-//     .then((response) => {
-//       return response.json();
-//     })
-//     .then((json) => json)
-//     .catch((error) => {
-//       setError(error);
-//     });
-// }
+function getFieldModifiers(name) {
+  return fetch(`${url}/fieldModifiers?name=${name}`)
+    .then((response) => {
+      return response.json();
+    })
+    .then((json) => json)
+    .catch((error) => {
+      setError(error);
+    });
+}
 
 function getLedInfo() {
   fetch(url + "/fastLedInfo")
