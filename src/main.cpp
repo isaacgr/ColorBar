@@ -21,6 +21,7 @@ WebServer server(80);
 U8G2_SSD1306_128X64_NONAME_F_HW_I2C g_OLED(U8G2_R0, OLED_RESET, OLED_CLOCK, OLED_DATA);
 
 uint8_t apmode = 0;
+uint8_t rgbmode = 0;
 bool writeFields = false;
 bool RESET = false;
 uint8_t g_lineHeight = 0;
@@ -74,8 +75,9 @@ void IRAM_ATTR POWER_ISR()
 
   unsigned long interrupt_time = millis();
 
-  unsigned long toggle_ap_mode_time = 2500; // toggle ap mode if button held for 3s
-  unsigned long factory_reset_time = 9500;  // clear eeprom if button held for 10s
+  unsigned long toggle_ap_mode_time = 3000; // toggle the access point mode if button held for 3s
+  unsigned long rgb_mode = 5000;            // toggle rgb edit mode if button held for 5s
+  unsigned long factory_reset_time = 10000; // clear eeprom if button held for 10s
 
   uint8_t pinState = digitalRead(POWER_BUTTON);
   if (pinState == 1)
@@ -95,11 +97,15 @@ void IRAM_ATTR POWER_ISR()
         g_Power = !g_Power;
         writeFields = true;
       }
-      else if (diff >= toggle_ap_mode_time && diff < factory_reset_time)
+      else if (diff >= toggle_ap_mode_time && diff < rgb_mode)
       {
         apmode = !apmode;
         EEPROM.write(AP_SET, apmode);
         RESET = true;
+      }
+      else if (diff >= rgb_mode && diff < factory_reset_time)
+      {
+        rgbmode = !rgbmode;
       }
       else if (diff >= factory_reset_time)
       {
@@ -122,13 +128,27 @@ void IRAM_ATTR PATTERN_ISR()
   // If interrupts come faster than 200ms, assume it's a bounce and ignore
   if (interrupt_time - last_interrupt_time > 200)
   {
-    if (currentPatternIndex >= patternCount - 1)
+    if (rgbmode)
     {
-      currentPatternIndex = 0;
+      if (solidColor.r >= 255)
+      {
+        solidColor = CRGB(0, solidColor.g, solidColor.b);
+      }
+      else
+      {
+        solidColor = CRGB(solidColor.r += 16, solidColor.g, solidColor.b);
+      }
     }
     else
     {
-      currentPatternIndex++;
+      if (currentPatternIndex >= patternCount - 1)
+      {
+        currentPatternIndex = 0;
+      }
+      else
+      {
+        currentPatternIndex++;
+      }
     }
   }
   last_interrupt_time = interrupt_time;
@@ -142,15 +162,29 @@ void IRAM_ATTR BRIGHTNESS_INC_ISR()
   // If interrupts come faster than 200ms, assume it's a bounce and ignore
   if (interrupt_time - last_interrupt_time > 200)
   {
-    if (g_Brightness + BRIGHTNESS_INCREMENT >= 255)
+    if (rgbmode)
     {
-      g_Brightness = 255;
-      FastLED.setBrightness(g_Brightness);
+      if (solidColor.g >= 255)
+      {
+        solidColor = CRGB(solidColor.r, 0, solidColor.b);
+      }
+      else
+      {
+        solidColor = CRGB(solidColor.r, solidColor.g += 16, solidColor.b);
+      }
     }
     else
     {
-      g_Brightness += BRIGHTNESS_INCREMENT;
-      FastLED.setBrightness(g_Brightness);
+      if (g_Brightness + BRIGHTNESS_INCREMENT >= 255)
+      {
+        g_Brightness = 255;
+        FastLED.setBrightness(g_Brightness);
+      }
+      else
+      {
+        g_Brightness += BRIGHTNESS_INCREMENT;
+        FastLED.setBrightness(g_Brightness);
+      }
     }
   }
   last_interrupt_time = interrupt_time;
@@ -164,16 +198,29 @@ void IRAM_ATTR BRIGHTNESS_DEC_ISR()
   // If interrupts come faster than 200ms, assume it's a bounce and ignore
   if (interrupt_time - last_interrupt_time > 200)
   {
-
-    if (g_Brightness - BRIGHTNESS_INCREMENT <= 0)
+    if (rgbmode)
     {
-      g_Brightness = 0;
-      FastLED.setBrightness(g_Brightness);
+      if (solidColor.b >= 255)
+      {
+        solidColor = CRGB(solidColor.r, solidColor.g, 0);
+      }
+      else
+      {
+        solidColor = CRGB(solidColor.r, solidColor.g, solidColor.b += 16);
+      }
     }
     else
     {
-      g_Brightness -= BRIGHTNESS_INCREMENT;
-      FastLED.setBrightness(g_Brightness);
+      if (g_Brightness - BRIGHTNESS_INCREMENT <= 0)
+      {
+        g_Brightness = 0;
+        FastLED.setBrightness(g_Brightness);
+      }
+      else
+      {
+        g_Brightness -= BRIGHTNESS_INCREMENT;
+        FastLED.setBrightness(g_Brightness);
+      }
     }
   }
   last_interrupt_time = interrupt_time;
@@ -256,7 +303,6 @@ void setup()
 void loop()
 {
   server.handleClient();
-  // sensorValue = map(sensorValue, 0, 4095, 0, 255);
   if (g_Power == 0)
   {
     fill_solid(leds, NUM_LEDS, CRGB::Black);
@@ -279,35 +325,44 @@ void loop()
   EVERY_N_MILLISECONDS(250)
   {
     g_OLED.clearBuffer();
-    g_OLED.setCursor(0, g_lineHeight);
-    g_OLED.print(getHostname());
-    g_OLED.setCursor(0, g_lineHeight * 2);
-    g_OLED.printf("FPS: %u", FastLED.getFPS());
-    g_OLED.setCursor(0, g_lineHeight * 3);
-    g_OLED.printf("MaxPower: %u mW", calculate_unscaled_power_mW(leds, NUM_LEDS));
-    g_OLED.setCursor(0, g_lineHeight * 4);
-    g_OLED.print("Pattern: ");
-    g_OLED.print(patterns[currentPatternIndex].name);
-    g_OLED.setCursor(0, g_lineHeight * 5);
-    g_OLED.printf("Brightness: %s/%d", getBrightness(), calculate_max_brightness_for_power_mW(255, 5 * MILLI_AMPS));
-    g_OLED.setCursor(0, g_lineHeight * 6);
-    g_OLED.print("RGB: ");
-    g_OLED.print(getSolidColor());
-    g_OLED.setCursor(0, g_lineHeight * 7);
-    if (apmode == 0)
+    if (!rgbmode)
     {
-      if (WiFi.status() == WL_CONNECTED)
+      g_OLED.setCursor(0, g_lineHeight);
+      g_OLED.print(getHostname());
+      g_OLED.setCursor(0, g_lineHeight * 2);
+      g_OLED.printf("FPS: %u", FastLED.getFPS());
+      g_OLED.setCursor(0, g_lineHeight * 3);
+      g_OLED.printf("MaxPower: %u mW", calculate_unscaled_power_mW(leds, NUM_LEDS));
+      g_OLED.setCursor(0, g_lineHeight * 4);
+      g_OLED.print("Pattern: ");
+      g_OLED.print(patterns[currentPatternIndex].name);
+      g_OLED.setCursor(0, g_lineHeight * 5);
+      g_OLED.printf("Brightness: %s/%d", getBrightness(), calculate_max_brightness_for_power_mW(255, 5 * MILLI_AMPS));
+      g_OLED.setCursor(0, g_lineHeight * 6);
+      g_OLED.print("RGB: ");
+      g_OLED.print(getSolidColor());
+      g_OLED.setCursor(0, g_lineHeight * 7);
+      if (apmode == 0)
       {
-        g_OLED.println(WiFi.localIP());
+        if (WiFi.status() == WL_CONNECTED)
+        {
+          g_OLED.println(WiFi.localIP());
+        }
+        else
+        {
+          g_OLED.println("No wifi");
+        }
       }
       else
       {
-        g_OLED.println("No wifi");
+        g_OLED.println("AP Mode");
       }
     }
     else
     {
-      g_OLED.println("AP Mode");
+      g_OLED.setCursor(0, g_lineHeight);
+      g_OLED.print("RGB: ");
+      g_OLED.print(getSolidColor());
     }
     g_OLED.sendBuffer();
   }

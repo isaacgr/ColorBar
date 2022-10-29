@@ -42,8 +42,6 @@ void setPatternByValue(uint8_t value);
 String setPattern(String patternName);
 String getPatterns();
 String getSolidColor();
-String getRGBString(uint8_t r, uint8_t g, uint8_t b);
-String getRGBColor(CRGB color);
 String setSolidColor(String value);
 String getFastLedInfo();
 

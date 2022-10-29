@@ -109,23 +109,10 @@ String getSolidColor()
   return String(solidColor.r) + "," + String(solidColor.g) + "," + String(solidColor.b);
 }
 
-String getRGBString(uint8_t r, uint8_t g, uint8_t b)
-{
-  solidColor = CRGB(r, g, b);
-
-  return String(solidColor.r) + "," + String(solidColor.g) + "," + String(solidColor.b);
-}
-
-String getRGBColor(CRGB color)
-{
-  return getRGBString(color.r, color.g, color.b);
-}
-
 String setSolidColor(String value)
 {
-  CRGB color = parseColor(value);
-
-  return getRGBColor(color);
+  solidColor = parseColor(value);
+  return String(solidColor.r) + "," + String(solidColor.g) + "," + String(solidColor.b);
 }
 
 /*
