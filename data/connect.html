@@ -45,6 +45,15 @@
           Save Name
         </button>
       </div>
+      <div class="content-block">
+        <button
+          id="ap-mode-button"
+          class="btn btn-secondary btn-sm"
+          type="submit"
+        >
+          Exit AP Mode
+        </button>
+      </div>
     </div>
     <script>
       document
@@ -86,6 +95,23 @@
             .catch((error) => {
               setError(error);
               alert("Unable to set device name");
+            });
+        });
+      document
+        .getElementById("ap-mode-button")
+        .addEventListener("click", function (event) {
+          event.preventDefault();
+          fetch(`${window.location.origin}/apmode`, {
+            method: "POST"
+          })
+            .then((response) => {
+              if (response.status === 200) {
+                alert("Restar or power cycle device to exit AP mode");
+              }
+            })
+            .catch((error) => {
+              setError(error);
+              alert("Unable to set AP mode value");
             });
         });
       function setError(error) {

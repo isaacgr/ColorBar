@@ -25,6 +25,7 @@ uint8_t rgbmode = 0;
 bool writeFields = false;
 bool RESET = false;
 uint8_t g_lineHeight = 0;
+uint8_t oled_i2c_addr = 0x78; // address for oled display
 
 uint8_t g_Brightness = 128;
 uint8_t g_Power = 1;
@@ -75,8 +76,8 @@ void IRAM_ATTR POWER_ISR()
 
   unsigned long interrupt_time = millis();
 
-  unsigned long toggle_ap_mode_time = 3000; // toggle the access point mode if button held for 3s
-  unsigned long rgb_mode = 5000;            // toggle rgb edit mode if button held for 5s
+  unsigned long toggle_ap_mode_time = 5000; // toggle the access point mode if button held for 5s
+  unsigned long rgb_mode = 3000;            // toggle rgb edit mode if button held for 3s
   unsigned long factory_reset_time = 10000; // clear eeprom if button held for 10s
 
   uint8_t pinState = digitalRead(POWER_BUTTON);
@@ -97,13 +98,13 @@ void IRAM_ATTR POWER_ISR()
         g_Power = !g_Power;
         writeFields = true;
       }
-      else if (diff >= toggle_ap_mode_time && diff < rgb_mode)
+      else if (diff >= rgb_mode && diff < toggle_ap_mode_time)
       {
         apmode = !apmode;
         EEPROM.write(AP_SET, apmode);
         RESET = true;
       }
-      else if (diff >= rgb_mode && diff < factory_reset_time)
+      else if (diff >= toggle_ap_mode_time && diff < factory_reset_time)
       {
         rgbmode = !rgbmode;
       }
@@ -285,6 +286,7 @@ void setup()
 
   setupWeb();
 
+  g_OLED.setI2CAddress(oled_i2c_addr);
   g_OLED.clear();
   g_OLED.begin();
   g_OLED.setFont(u8g2_font_profont11_tf);
@@ -329,8 +331,9 @@ void loop()
     {
       g_OLED.setCursor(0, g_lineHeight);
       g_OLED.print(getHostname());
-      g_OLED.setCursor(0, g_lineHeight * 2);
-      g_OLED.printf("FPS: %u", FastLED.getFPS());
+      g_OLED.printf(" FPS: %u", FastLED.getFPS());
+      // g_OLED.setCursor(0, g_lineHeight * 2);
+      // g_OLED.printf("FPS: %u  mem: %d", FastLED.getFPS(), ESP.getFreeHeap());
       g_OLED.setCursor(0, g_lineHeight * 3);
       g_OLED.printf("MaxPower: %u mW", calculate_unscaled_power_mW(leds, NUM_LEDS));
       g_OLED.setCursor(0, g_lineHeight * 4);

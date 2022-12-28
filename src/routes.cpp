@@ -114,6 +114,22 @@ void setupWeb()
       server.send(400, "application/json", error);
     } });
 
+  server.on("/apmode", HTTP_POST, []()
+            {
+    try
+    {
+      writeAPModeEEPROM();
+      server.send(200, "text/plain", "OK");
+    }
+    catch (const std::length_error &e)
+    {
+      StaticJsonDocument<32> root;
+      root["error"] = e.what();
+      String error;
+      serializeJsonPretty(root, error);
+      server.send(400, "application/json", error);
+    } });
+
   server.onNotFound([]()
                     {
     if (!handleFileRead(server.uri()))

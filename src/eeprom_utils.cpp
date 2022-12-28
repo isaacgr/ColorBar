@@ -61,6 +61,12 @@ void writeDeviceNameEEPROM(char name[])
   EEPROM.commit();
 }
 
+void writeAPModeEEPROM()
+{
+  EEPROM.write(AP_SET, 0);
+  EEPROM.commit();
+}
+
 void writeFieldsToEEPROM()
 {
   uint8_t index = 25;

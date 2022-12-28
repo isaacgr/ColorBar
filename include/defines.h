@@ -23,7 +23,7 @@ DEFINITIONS
 
 #define NUM_STRIPS 2
 #define LEDS_STRIP_1 74
-// #define LEDS_STRIP_2 15
+#define LEDS_STRIP_2 72
 #define NUM_LEDS LEDS_STRIP_1
 #define LED_PIN_STRIP_1 5
 #define LED_PIN_STRIP_2 17
