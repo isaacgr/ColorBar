@@ -29,7 +29,7 @@ DEFINITIONS
 #define LED_PIN_STRIP_2 17
 #define COLOR_SEQUENCE GRB
 #define CHIPSET WS2812B
-#define MILLI_AMPS 4000 // IMPORTANT: set the max milli-Amps of your power supply (4A = 4000mA)
+#define MILLI_AMPS 2000 // IMPORTANT: set the max milli-Amps of your power supply (4A = 4000mA)
 
 #define FRAMES_PER_SECOND 120
 #define BRIGHTNESS_INCREMENT 16
