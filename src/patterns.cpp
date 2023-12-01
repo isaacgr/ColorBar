@@ -270,18 +270,20 @@ void DrawFlicker1()
 
 void DrawFlicker2()
 {
-  CRGB targetWhite(93, 0, 255);
-  CRGB targetBlack(0, 0, 0);
+#define NUM_COLORS 4
 
-  CRGB bgColor(0, 15, 2); // pine green ?
+  CRGB colors[NUM_COLORS] = {
+      CRGB(179, 0, 12),
+      CRGB(220, 61, 42),
+      // CRGB(13, 239, 66),
+      CRGB(0, 179, 44),
+      CRGB(13, 89, 1)};
 
-  // fade all existing pixels toward bgColor by "5" (out of 255)
-  fadeTowardColor(leds, NUM_LEDS, targetBlack, 5);
+  fadeTowardColor(leds, NUM_LEDS, colors[random8(NUM_COLORS)], 5);
 
   // periodically set random pixel to a random color, to show the fading
   uint16_t pos = random16(NUM_LEDS);
-  CRGB color = targetWhite;
-  leds[pos] = color;
+  leds[pos] = colors[random8(NUM_COLORS)];
 }
 
 // when diffusing the fire upwards, these control how much to blend in from teh cells below
