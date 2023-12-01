@@ -176,9 +176,9 @@ void IRAM_ATTR BRIGHTNESS_INC_ISR()
     }
     else
     {
-      if (g_Brightness + BRIGHTNESS_INCREMENT >= 255)
+      if (g_Brightness + BRIGHTNESS_INCREMENT >= calculate_max_brightness_for_power_mW(255, 5 * MILLI_AMPS))
       {
-        g_Brightness = 255;
+        g_Brightness = calculate_max_brightness_for_power_mW(255, 5 * MILLI_AMPS);
         FastLED.setBrightness(g_Brightness);
       }
       else
