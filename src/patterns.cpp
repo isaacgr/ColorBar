@@ -6,6 +6,19 @@ uint8_t initialHue = 0;
 const uint8_t deltaHue = 16;
 const uint8_t hueDensity = 1;
 
+PatternAndNameList patterns = {
+    {showSolidColor, "solidColor", ""},
+    {pacifica_loop, "pacifica", ""},
+    {DrawFireEffect, "fire", ""},
+    {DrawWaterEffect, "water", ""},
+    {DrawRainbowEffect, "rainbow", ""},
+    {DrawFillRainbowEffect, "rainbow2", ""},
+    {DrawFlicker1, "flicker1", ""},
+    {DrawFlicker2, "flicker2", ""},
+};
+
+uint8_t patternCount = ARRAY_SIZE(patterns);
+
 void DrawRainbow()
 {
   fill_rainbow(leds, NUM_LEDS, initialHue += hueDensity, deltaHue);

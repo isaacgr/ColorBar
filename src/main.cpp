@@ -34,40 +34,6 @@ uint8_t currentPatternIndex = 0;
 CRGB leds[NUM_LEDS] = {0};
 CRGB solidColor = CRGB::Red;
 
-// modifiers for fire, water and pacifica effects
-uint8_t g_ColorTemperature = 0;
-uint8_t g_ColorPalette = 0;
-uint8_t g_Sparking = 150;
-uint8_t g_Cooling = 6;
-uint8_t g_Sparks = 1;
-uint8_t g_SparkHeight = 1;
-bool breversed = false;
-bool bmirrored = true;
-bool g_Cycle = false;
-uint8_t g_Speed = 20;
-
-PatternAndNameList patterns = {
-    {showSolidColor, "solidColor", ""},
-    {pacifica_loop, "pacifica", ""},
-    {DrawFireEffect, "fire", ""},
-    {DrawWaterEffect, "water", ""},
-    {DrawRainbowEffect, "rainbow", ""},
-    {DrawFillRainbowEffect, "rainbow2", ""},
-    {DrawFlicker1, "flicker1", ""},
-    {DrawFlicker2, "flicker2", ""},
-};
-
-uint8_t patternCount = ARRAY_SIZE(patterns);
-
-FieldList fields = {
-    {"power", "Power", NumberFieldType, false, 0, 1, getPower, NULL, setPower},
-    {"brightness", "Brightness", NumberFieldType, false, 1, 255, getBrightness, NULL, setBrightness},
-    {"pattern", "Pattern", SelectFieldType, false, 0, patternCount, getPattern, getPatterns, setPattern, setPatternByValue, getPatternIndex},
-    {"solidColor", "SolidColor", ColorFieldType, false, 0, 255, getSolidColor, NULL, setSolidColor},
-};
-
-uint8_t fieldCount = ARRAY_SIZE(fields);
-
 void IRAM_ATTR POWER_ISR()
 {
   static unsigned long last_interrupt_time = 0;

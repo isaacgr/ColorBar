@@ -6,6 +6,15 @@
 #include "leds.h"
 #include "pattern.h"
 
+FieldList fields = {
+    {"power", "Power", NumberFieldType, false, 0, 1, getPower, NULL, setPower},
+    {"brightness", "Brightness", NumberFieldType, false, 1, 255, getBrightness, NULL, setBrightness},
+    {"pattern", "Pattern", SelectFieldType, false, 0, patternCount, getPattern, getPatterns, setPattern, setPatternByValue, getPatternIndex},
+    {"solidColor", "SolidColor", ColorFieldType, false, 0, 255, getSolidColor, NULL, setSolidColor},
+};
+
+uint8_t fieldCount = ARRAY_SIZE(fields);
+
 /*
 ===============================
 Power

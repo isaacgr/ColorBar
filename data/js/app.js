@@ -139,31 +139,6 @@ function handleModifier(id, value, type) {
   }
 }
 
-function handlePalette(field) {
-  document.getElementById("palette-selection").innerHTML = field.value
-    .split(/(?=[A-Z])/)
-    .join(" ");
-  let items = field.options
-    .split(",")
-    .map((item) => {
-      return `<li class="dropdown-item" onclick="updatePalette(this.id)" id=${item}>${item
-        .split(/(?=[A-Z])/)
-        .join(" ")}</li>`;
-    })
-    .join("");
-  document.getElementById("palette-options").innerHTML = items;
-}
-
-function updatePalette(palette) {
-  setField("palette", palette)
-    .then((result) => {
-      document.getElementById("palette-selection").innerHTML = result.newValue
-        .split(/(?=[A-Z])/)
-        .join(" ");
-    })
-    .catch((error) => setError(error));
-}
-
 function handleColorTemperature(field) {
   document.getElementById("temperature-selection").innerHTML = field.value
     .split(/(?=[A-Z])/)
@@ -206,8 +181,6 @@ function populateFields(json) {
       handlePattern(field);
     } else if (field.name === "solidColor") {
       handleSolidColor(field);
-    } else if (field.name === "palette") {
-      handlePalette(field);
     } else if (field.name === "colorTemperature") {
       handleColorTemperature(field);
     } else if (field.isModifier === true) {
