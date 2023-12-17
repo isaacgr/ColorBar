@@ -32,17 +32,6 @@ void DrawFireEffect()
   DrawFire(HeatColors_p);
 };
 
-/*
-===============================
-Water effect
-===============================
-*/
-
-void DrawWaterEffect()
-{
-  FastLED.clear();
-  DrawFire(IceColors_p);
-};
 
 /*
 ===============================

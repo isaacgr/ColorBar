@@ -10,7 +10,6 @@ PatternAndNameList patterns = {
     {showSolidColor, "solidColor", ""},
     {pacifica_loop, "pacifica", ""},
     {DrawFireEffect, "fire", ""},
-    {DrawWaterEffect, "water", ""},
     {DrawRainbowEffect, "rainbow", ""},
     {DrawFillRainbowEffect, "rainbow2", ""},
     {DrawFlicker1, "flicker1", ""},
